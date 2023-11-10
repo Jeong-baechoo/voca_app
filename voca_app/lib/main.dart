@@ -27,8 +27,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final List<Widget> _pages = [
     MyHomeScreen(),
-    GridViewPage(),
-    HomePage(),
+    const GridViewPage(),
+    const HomePage(),
   ];
 
   final List<String> _titles = [
@@ -41,10 +41,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('암기빵'),
+        title: const Text('암기빵'),
         leading: _currentIndex != 0
             ? IconButton(
-                icon: Icon(Icons.arrow_back),
+                icon: const Icon(Icons.arrow_back),
                 onPressed: () {
                   setState(() {
                     _currentIndex = 0;
@@ -108,7 +108,7 @@ class CategoryGrid extends StatelessWidget {
   final String category;
   final List<String> items;
 
-  CategoryGrid({required this.category, required this.items});
+  const CategoryGrid({required this.category, required this.items});
 
   @override
   Widget build(BuildContext context) {
@@ -118,11 +118,11 @@ class CategoryGrid extends StatelessWidget {
         // 카테고리명 표시
         Text(
           category,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         // 그리드 생성
         GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4, // 한 행에 4개의 아이템
             childAspectRatio: 1.33, // 가로와 세로의 비율 1.33:1
           ),
@@ -131,7 +131,7 @@ class CategoryGrid extends StatelessWidget {
             return GridItem(item: items[index]);
           },
           shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
         ),
       ],
     );
@@ -141,7 +141,7 @@ class CategoryGrid extends StatelessWidget {
 class GridItem extends StatelessWidget {
   final String item;
 
-  GridItem({required this.item});
+  const GridItem({required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -199,7 +199,7 @@ class _GridViewPageState extends State<GridViewPage> {
                     borderRadius: BorderRadius.circular(100), // 원형 버튼 모양
                   ),
                 ),
-                child: Text('퀴즈풀기'),
+                child: const Text('퀴즈풀기'),
               ),
             ],
           ),
@@ -236,7 +236,7 @@ class _GridViewPageState extends State<GridViewPage> {
             items.add('Item : $newItemIndex');
           });
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -249,13 +249,13 @@ class DetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('상세 화면'),
+        title: const Text('상세 화면'),
       ),
       body: Column(
         children: [
           Container(
             height: 200,
-            padding: EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(10.0),
             child: PageView(
               children: const [
                 Card(
@@ -284,10 +284,10 @@ class DetailScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          HomePage()) // NextScreen은 대체할 새로운 화면입니다
+                          const HomePage()) // NextScreen은 대체할 새로운 화면입니다
                   );
             },
-            child: Card(
+            child: const Card(
               child: Center(
                 child: Text('낱말 카드', style: TextStyle(fontSize: 24.0)),
               ),
@@ -305,7 +305,7 @@ class HomePage extends StatelessWidget {
 
   _renderBg() {
     return Container(
-      decoration: BoxDecoration(color: const Color(0xFFFFFFFF)),
+      decoration: const BoxDecoration(color: Color(0xFFFFFFFF)),
     );
   }
 
@@ -315,7 +315,7 @@ class HomePage extends StatelessWidget {
       removeBottom: true,
       child: AppBar(
         elevation: 0.0,
-        backgroundColor: Color(0x00FFFFFF),
+        backgroundColor: const Color(0x00FFFFFF),
       ),
     );
   }
@@ -324,7 +324,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('FlipCard'),
+        title: const Text('FlipCard'),
       ),
       body: Stack(
         fit: StackFit.expand,
@@ -338,45 +338,41 @@ class HomePage extends StatelessWidget {
                 flex: 4,
                 child: PageView(
                   children: [
-                    Container(
-                      child: FlipCard(
-                        direction: FlipDirection.HORIZONTAL,
-                        side: CardSide.FRONT,
-                        speed: 1000,
-                        onFlipDone: (status) {
-                          print(status);
-                        },
-                        front: Container(
-                          decoration: BoxDecoration(
-                            color: Color(0xFF006666),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text('Front 1',
-                                  style: Theme.of(context).textTheme.headline1),
-                              Text('Click here to flip back 1',
-                                  style: Theme.of(context).textTheme.bodyText1),
-                            ],
-                          ),
+                    FlipCard(
+                      direction: FlipDirection.HORIZONTAL,
+                      side: CardSide.FRONT,
+                      speed: 1000,
+                      onFlipDone: (status) {
+                        print(status);
+                      },
+                      front: Container(
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF006666),
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
                         ),
-                        back: Container(
-                          decoration: BoxDecoration(
-                            color: Color(0xFF006666),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text('Back 1',
-                                  style: Theme.of(context).textTheme.headline1),
-                              Text('Click here to flip front 1',
-                                  style: Theme.of(context).textTheme.bodyText1),
-                            ],
-                          ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text('Front 1',
+                                style: Theme.of(context).textTheme.headline1),
+                            Text('Click here to flip back 1',
+                                style: Theme.of(context).textTheme.bodyText1),
+                          ],
+                        ),
+                      ),
+                      back: Container(
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF006666),
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text('Back 1',
+                                style: Theme.of(context).textTheme.headline1),
+                            Text('Click here to flip front 1',
+                                style: Theme.of(context).textTheme.bodyText1),
+                          ],
                         ),
                       ),
                     ),
@@ -388,7 +384,7 @@ class HomePage extends StatelessWidget {
                         print(status);
                       },
                       front: Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Color(0xFF006666),
                           borderRadius: BorderRadius.all(Radius.circular(8.0)),
                         ),
@@ -403,7 +399,7 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                       back: Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Color(0xFF006666),
                           borderRadius: BorderRadius.all(Radius.circular(8.0)),
                         ),
