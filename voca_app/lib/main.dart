@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: MyHomePage(),
     );
   }
@@ -164,12 +165,21 @@ class GridViewPage extends StatefulWidget {
 
 class _GridViewPageState extends State<GridViewPage> {
   List<String> items = ['수능영단어', 'Item : 1', 'Item : 2', 'Item : 3'];
-
+  List<String> savedWords = [
+    'Apple',
+    'Banana',
+    'Cherry',
+    'Date',
+    'Fig',
+    'Grape',
+  ];
   void _onItemTap(int index) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const DetailScreen(),
+        builder: (context) => DetailScreen(
+          savedWords: savedWords,
+        ),
       ),
     );
   }
@@ -199,7 +209,7 @@ class _GridViewPageState extends State<GridViewPage> {
                     borderRadius: BorderRadius.circular(100), // 원형 버튼 모양
                   ),
                 ),
-                child: const Text('퀴즈풀기'),
+                child: Text('퀴즈풀기'),
               ),
             ],
           ),
@@ -243,7 +253,9 @@ class _GridViewPageState extends State<GridViewPage> {
 }
 
 class DetailScreen extends StatelessWidget {
-  const DetailScreen({super.key});
+  final List<String> savedWords; // 단어 목록을 저장할 변수
+
+  const DetailScreen({Key? key, required this.savedWords}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -255,7 +267,7 @@ class DetailScreen extends StatelessWidget {
         children: [
           Container(
             height: 200,
-            padding: const EdgeInsets.all(10.0),
+            padding: EdgeInsets.all(10.0),
             child: PageView(
               children: const [
                 Card(
@@ -284,14 +296,15 @@ class DetailScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          const HomePage()) // NextScreen은 대체할 새로운 화면입니다
+                          HomePage()) // NextScreen은 대체할 새로운 화면입니다
                   );
             },
-            child: const Card(
+            child: Card(
               child: Center(
                 child: Text('낱말 카드', style: TextStyle(fontSize: 24.0)),
               ),
             ),
+            ],
           ),
           // 다른 위젯 추가
         ],
@@ -301,21 +314,23 @@ class DetailScreen extends StatelessWidget {
 }
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({Key? key});
+  final List<String> frontTexts = ['apple', 'Front 2'];
+  final List<String> backTexts = ['사과', 'Back 2'];
 
-  _renderBg() {
+  Widget _renderBackground() {
     return Container(
-      decoration: const BoxDecoration(color: Color(0xFFFFFFFF)),
+      decoration: BoxDecoration(color: const Color(0xFFFFFFFF)),
     );
   }
 
-  _renderAppBar(context) {
+  Widget _renderAppBar(BuildContext context) {
     return MediaQuery.removePadding(
       context: context,
       removeBottom: true,
       child: AppBar(
         elevation: 0.0,
-        backgroundColor: const Color(0x00FFFFFF),
+        backgroundColor: Color(0x00FFFFFF),
       ),
     );
   }
@@ -329,50 +344,57 @@ class HomePage extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          _renderBg(),
+          _renderBackground(),
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              _renderAppBar(context),
+              SizedBox(
+                height: 100,
+              ),
+              // _renderAppBar(context),
               Expanded(
                 flex: 4,
                 child: PageView(
                   children: [
-                    FlipCard(
-                      direction: FlipDirection.HORIZONTAL,
-                      side: CardSide.FRONT,
-                      speed: 1000,
-                      onFlipDone: (status) {
-                        print(status);
-                      },
-                      front: Container(
-                        decoration: const BoxDecoration(
-                          color: Color(0xFF006666),
-                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    Container(
+                      child: FlipCard(
+                        direction: FlipDirection.HORIZONTAL,
+                        side: CardSide.FRONT,
+                        speed: 1000,
+                        onFlipDone: (status) {
+                          print(status);
+                        },
+                        front: Container(
+                          decoration: BoxDecoration(
+                            color: Color(0xFF006666),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text('Front 1',
+                                  style: Theme.of(context).textTheme.headline1),
+                              Text('Click here to flip back 1',
+                                  style: Theme.of(context).textTheme.bodyText1),
+                            ],
+                          ),
                         ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text('Front 1',
-                                style: Theme.of(context).textTheme.headline1),
-                            Text('Click here to flip back 1',
-                                style: Theme.of(context).textTheme.bodyText1),
-                          ],
-                        ),
-                      ),
-                      back: Container(
-                        decoration: const BoxDecoration(
-                          color: Color(0xFF006666),
-                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text('Back 1',
-                                style: Theme.of(context).textTheme.headline1),
-                            Text('Click here to flip front 1',
-                                style: Theme.of(context).textTheme.bodyText1),
-                          ],
+                        back: Container(
+                          decoration: BoxDecoration(
+                            color: Color(0xFF006666),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text('Back 1',
+                                  style: Theme.of(context).textTheme.headline1),
+                              Text('Click here to flip front 1',
+                                  style: Theme.of(context).textTheme.bodyText1),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -384,7 +406,7 @@ class HomePage extends StatelessWidget {
                         print(status);
                       },
                       front: Container(
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           color: Color(0xFF006666),
                           borderRadius: BorderRadius.all(Radius.circular(8.0)),
                         ),
@@ -399,7 +421,7 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                       back: Container(
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           color: Color(0xFF006666),
                           borderRadius: BorderRadius.all(Radius.circular(8.0)),
                         ),
@@ -424,6 +446,55 @@ class HomePage extends StatelessWidget {
             ],
           )
         ],
+      ),
+    );
+  }
+}
+
+class FlipCardContainer extends StatelessWidget {
+  final String frontText;
+  final String backText;
+
+  const FlipCardContainer(
+      {Key? key, required this.frontText, required this.backText})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FlipCard(
+      direction: FlipDirection.HORIZONTAL,
+      side: CardSide.FRONT,
+      speed: 1000,
+      onFlipDone: (status) {
+        print(status);
+      },
+      front: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(frontText, style: Theme.of(context).textTheme.headline1),
+            Text('Click here to flip back',
+                style: Theme.of(context).textTheme.bodyText1),
+          ],
+        ),
+      ),
+      back: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(backText, style: Theme.of(context).textTheme.headline1),
+            Text('Click here to flip front',
+                style: Theme.of(context).textTheme.bodyText1),
+          ],
+        ),
       ),
     );
   }
