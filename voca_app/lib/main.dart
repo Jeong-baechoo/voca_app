@@ -29,7 +29,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _pages = [
     MyHomeScreen(),
     const GridViewPage(),
-    const HomePage(),
+    HomePage(),
   ];
 
   final List<String> _titles = [
@@ -200,17 +200,6 @@ class _GridViewPageState extends State<GridViewPage> {
               Expanded(
                 child: Text(items[index]),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  _onQuizButtonTap(index);
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100), // 원형 버튼 모양
-                  ),
-                ),
-                child: Text('퀴즈풀기'),
-              ),
             ],
           ),
         ),
@@ -253,7 +242,7 @@ class _GridViewPageState extends State<GridViewPage> {
 }
 
 class DetailScreen extends StatelessWidget {
-  final List<String> savedWords; // 단어 목록을 저장할 변수
+  final List<String> savedWords;
 
   const DetailScreen({Key? key, required this.savedWords}) : super(key: key);
 
@@ -265,50 +254,60 @@ class DetailScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Container(
-            height: 200,
-            padding: EdgeInsets.all(10.0),
-            child: PageView(
-              children: const [
-                Card(
-                  child: Center(
-                    child: Text('페이지 1', style: TextStyle(fontSize: 24.0)),
-                  ),
-                ),
-                Card(
-                  child: Center(
-                    child: Text('페이지 2', style: TextStyle(fontSize: 24.0)),
-                  ),
-                ),
-                Card(
-                  child: Center(
-                    child: Text('페이지 3', style: TextStyle(fontSize: 24.0)),
-                  ),
-                ),
-              ],
-            ),
+          const SizedBox(height: 20),
+          _buildQuizSection(context),
+          Divider(color: Colors.black),
+          Expanded(
+            child: _buildSavedWordsList(),
           ),
-          // 여기에 낱말 카드와 테스트 리스트 또는 다른 위젯 추가
-          // 예를 들어:
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          HomePage()) // NextScreen은 대체할 새로운 화면입니다
-                  );
-            },
-            child: Card(
-              child: Center(
-                child: Text('낱말 카드', style: TextStyle(fontSize: 24.0)),
-              ),
-            ),
-            ],
-          ),
-          // 다른 위젯 추가
         ],
       ),
+    );
+  }
+
+  Widget _buildQuizSection(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text('퀴즈풀기'),
+        FloatingActionButton(
+          child: Icon(Icons.play_arrow),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(),
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSavedWordsList() {
+    return ListView.builder(
+      itemCount: savedWords.length,
+      itemBuilder: (context, index) {
+        return InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(),
+              ),
+            );
+          },
+          child: Column(
+            children: <Widget>[
+              ListTile(
+                title: Text(savedWords[index]),
+              ),
+              Divider(color: Colors.black),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -317,7 +316,6 @@ class HomePage extends StatelessWidget {
   HomePage({Key? key});
   final List<String> frontTexts = ['apple', 'Front 2'];
   final List<String> backTexts = ['사과', 'Back 2'];
-
   Widget _renderBackground() {
     return Container(
       decoration: BoxDecoration(color: const Color(0xFFFFFFFF)),
@@ -335,11 +333,20 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  Widget _renderFlipCardContainer(String frontText, String backText) {
+    return Container(
+      child: FlipCardContainer(
+        frontText: frontText,
+        backText: backText,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('FlipCard'),
+        title: Text('FlipCard'),
       ),
       body: Stack(
         fit: StackFit.expand,
@@ -348,95 +355,17 @@ class HomePage extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              SizedBox(
-                height: 100,
-              ),
-              // _renderAppBar(context),
+              _renderAppBar(context),
               Expanded(
                 flex: 4,
                 child: PageView(
-                  children: [
-                    Container(
-                      child: FlipCard(
-                        direction: FlipDirection.HORIZONTAL,
-                        side: CardSide.FRONT,
-                        speed: 1000,
-                        onFlipDone: (status) {
-                          print(status);
-                        },
-                        front: Container(
-                          decoration: BoxDecoration(
-                            color: Color(0xFF006666),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text('Front 1',
-                                  style: Theme.of(context).textTheme.headline1),
-                              Text('Click here to flip back 1',
-                                  style: Theme.of(context).textTheme.bodyText1),
-                            ],
-                          ),
-                        ),
-                        back: Container(
-                          decoration: BoxDecoration(
-                            color: Color(0xFF006666),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text('Back 1',
-                                  style: Theme.of(context).textTheme.headline1),
-                              Text('Click here to flip front 1',
-                                  style: Theme.of(context).textTheme.bodyText1),
-                            ],
-                          ),
-                        ),
-                      ),
+                  children: List.generate(
+                    frontTexts.length,
+                    (index) => _renderFlipCardContainer(
+                      frontTexts[index],
+                      backTexts[index],
                     ),
-                    FlipCard(
-                      direction: FlipDirection.HORIZONTAL,
-                      side: CardSide.FRONT,
-                      speed: 1000,
-                      onFlipDone: (status) {
-                        print(status);
-                      },
-                      front: Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xFF006666),
-                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text('Front 2',
-                                style: Theme.of(context).textTheme.headline1),
-                            Text('Click here to flip back 2',
-                                style: Theme.of(context).textTheme.bodyText1),
-                          ],
-                        ),
-                      ),
-                      back: Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xFF006666),
-                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text('Back 2',
-                                style: Theme.of(context).textTheme.headline1),
-                            Text('Click here to flip front 2',
-                                style: Theme.of(context).textTheme.bodyText1),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
               Expanded(
