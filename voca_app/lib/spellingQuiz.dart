@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -43,14 +42,15 @@ class _SpellingQuizScreenState extends State<SpellingQuizScreen> {
   // 사용자의 답변을 정답과 비교
   void checkAnswer() {
     String userAnswer = answerController.text.toLowerCase().trim();
-    String correctAnswer = quizQuestions[currentIndex]['word']!.toLowerCase().trim();
+    String correctAnswer =
+        quizQuestions[currentIndex]['word']!.toLowerCase().trim();
 
     setState(() {
       isCorrect = userAnswer == correctAnswer; // 비교에 기반하여 isCorrect 설정
       if (isCorrect!) score++; // 답이 정확하면 점수 증가
     });
 
-    Future.delayed(Duration(seconds: 2), nextQuestion);
+    Future.delayed(const Duration(seconds: 2), nextQuestion);
   }
 
   void nextQuestion() {
@@ -70,7 +70,7 @@ class _SpellingQuizScreenState extends State<SpellingQuizScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Quiz Completed'),
+          title: const Text('Quiz Completed'),
           content: Text('Your Score: $score / 10'),
           actions: <Widget>[
             TextButton(
@@ -78,7 +78,7 @@ class _SpellingQuizScreenState extends State<SpellingQuizScreen> {
                 Navigator.of(context).pop();
                 resetQuiz(); // 새 라운드를 위해 퀴즈 재설정
               },
-              child: Text('Play Again'),
+              child: const Text('Play Again'),
             ),
           ],
         );
@@ -100,31 +100,32 @@ class _SpellingQuizScreenState extends State<SpellingQuizScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Spelling Quiz (${currentIndex + 1}/${quizQuestions.length})'),
+        title:
+            Text('Spelling Quiz (${currentIndex + 1}/${quizQuestions.length})'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               'Definition: ${quizQuestions[currentIndex]['definition']}',
-              style: TextStyle(fontSize: 18.0),
+              style: const TextStyle(fontSize: 18.0),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             TextField(
               controller: answerController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Enter Spelling',
               ),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             if (isCorrect != null)
               Column(
                 children: [
                   Text(isCorrect! ? 'Correct!' : 'Incorrect!'),
-                  SizedBox(height: 10.0),
+                  const SizedBox(height: 10.0),
                   Text('Word: ${quizQuestions[currentIndex]['word']}'),
                 ],
               ),
@@ -132,7 +133,7 @@ class _SpellingQuizScreenState extends State<SpellingQuizScreen> {
               alignment: Alignment.topRight,
               child: ElevatedButton(
                 onPressed: passQuestion,
-                child: Text('Pass'),
+                child: const Text('Pass'),
               ),
             ),
             Row(
@@ -140,7 +141,7 @@ class _SpellingQuizScreenState extends State<SpellingQuizScreen> {
               children: [
                 ElevatedButton(
                   onPressed: checkAnswer,
-                  child: Text('Check Answer'),
+                  child: const Text('Check Answer'),
                 ),
               ],
             ),
