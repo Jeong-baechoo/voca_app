@@ -40,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<String> _titles = [
     '단어장 홈',
     '내 단어장',
-    '프로필',
+    '사전검색',
   ];
 
   @override
@@ -75,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ? Icons.home
                     : i == 1
                         ? Icons.star_border_sharp
-                        : Icons.person,
+                        : Icons.collections_bookmark_rounded,
               ),
               label: _titles[i],
             ),
