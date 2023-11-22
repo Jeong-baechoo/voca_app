@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flip_card/flip_card.dart';
 import 'package:flutter/services.dart';
+import 'package:voca_app/detail_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,7 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _pages = [
     const MyHomeScreen(),
     const GridViewPage(),
-    const HomePage(),
+    const DicPage(),
   ];
 
   final List<String> _titles = [
@@ -154,6 +154,7 @@ class GridItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: const Color.fromARGB(255, 255, 250, 199), // 원하는 색상으로 변경
       child: Center(
         child: Text(item),
       ),
@@ -237,7 +238,7 @@ class _GridViewPageState extends State<GridViewPage> {
             child: Row(
               children: <Widget>[
                 Center(
-                  child: Text(items[index]),
+                  child: Text("단어장 ${index + 1}"),
                 ),
               ],
             ),
@@ -321,255 +322,16 @@ class _GridViewPageState extends State<GridViewPage> {
   }
 }
 
-class DetailScreen extends StatelessWidget {
-  final List<Map<String, String>> flashcards;
-
-  const DetailScreen({Key? key, required this.flashcards}) : super(key: key);
+class DicPage extends StatelessWidget {
+  const DicPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('상세 화면'),
-      ),
-      body: Column(
-        children: [
-          const SizedBox(height: 20),
-          _buildQuizSection(context),
-          const Divider(color: Colors.black),
-          Expanded(
-            child: _buildSavedWordsList(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildQuizSection(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text('퀴즈풀기'),
-        FloatingActionButton(
-          child: const Icon(Icons.play_arrow),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const HomePage(),
-              ),
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSavedWordsList() {
-    return ListView.builder(
-      itemCount: flashcards.length,
-      itemBuilder: (context, index) {
-        final currentFlashcard = flashcards[index];
-
-        return InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const HomePage(),
-              ),
-            );
-          },
-          child: Column(
-            children: <Widget>[
-              ListTile(
-                title: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            currentFlashcard['word']!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall!
-                                .copyWith(
-                                  color: Colors.black,
-                                ),
-                          ),
-                          Text(
-                            currentFlashcard['pronunciation']!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(
-                                  color: Colors.grey,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            '품사: ${currentFlashcard['partOfSpeech']!}',
-                            style: const TextStyle(color: Colors.green),
-                          ),
-                          Text(
-                            currentFlashcard['definition']!,
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Divider(color: Colors.black),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  Widget _renderBackground() {
-    return Container(
-      decoration:
-          const BoxDecoration(color: Color.fromARGB(255, 223, 223, 223)),
-    );
-  }
-
-  Widget _renderFlipCardContainer(
-      Map<String, String> flashCard, double screenWidth) {
-    return FlipCardContainer(
-      flashCard: flashCard,
-      containerWidth: screenWidth,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('FlipCard'),
-      ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          _renderBackground(),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              const SizedBox(
-                height: 100,
-              ),
-              Expanded(
-                flex: 4,
-                child: PageView(
-                  children: List.generate(
-                    FlashCard().flashcards.length,
-                    (index) => _renderFlipCardContainer(
-                        FlashCard().flashcards[index], screenWidth),
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Container(),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class FlipCardContainer extends StatelessWidget {
-  final Map<String, String> flashCard;
-  final double containerWidth; // 화면 가로 폭에 따른 컨테이너 폭
-
-  const FlipCardContainer({
-    Key? key,
-    required this.flashCard,
-    required this.containerWidth,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return FlipCard(
-      direction: FlipDirection.HORIZONTAL,
-      speed: 1000,
-      front: Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              flashCard['word']!,
-              style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                  fontSize: containerWidth * 0.1,
-                  color: Colors.black // 원하는 크기로 조절
-                  ),
-            ),
-            Text(
-              flashCard['pronunciation']!,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-          ],
-        ),
-      ),
-      back: Container(
-        width: containerWidth,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              flashCard['partOfSpeech']!,
-              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                    fontSize: containerWidth * 0.06, // 품사 폰트 크기를 폭의 6%로 조절
-                    color: Colors.green, // 품사 텍스트의 색상을 초록색으로 변경
-                  ),
-            ),
-            Text(
-              flashCard['definition']!,
-              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    fontSize: containerWidth * 0.1, // 폭의 10%
-                    color: Colors.black, // 텍스트의 색상을 검정으로 변경
-                  ),
-            ),
-            Text(
-              flashCard['example']!,
-              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    fontSize: containerWidth * 0.04, // 폭의 5%
-                    color: Colors.black, // 텍스트의 색상을 검정으로 변경
-                  ),
-            ),
-            Text(
-              flashCard['exampleTranslation']!,
-              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    fontSize: containerWidth * 0.05, // 폭의 5%
-                    color: Colors.black, // 텍스트의 색상을 검정으로 변경
-                  ),
-            ),
-          ],
+    return const Scaffold(
+      body: Center(
+        child: Text(
+          '사전 화면',
+          style: TextStyle(fontSize: 24.0),
         ),
       ),
     );
@@ -580,7 +342,6 @@ class FlashCard {
   List<Map<String, String>> flashcards = [
     {
       'word': 'candidate',
-      'pronunciation': '[│kændɪdət]',
       'partOfSpeech': 'noun',
       'definition': '후보자, 지원자',
       'example': 'one of the leading candidates for the presidency',
@@ -588,7 +349,6 @@ class FlashCard {
     },
     {
       'word': 'client',
-      'pronunciation': '[ˈklaɪənt]',
       'partOfSpeech': 'noun',
       'definition': '고객',
       'example': 'a lawyer with many famous clients',
@@ -596,7 +356,6 @@ class FlashCard {
     },
     {
       'word': 'colleague',
-      'pronunciation': '[│kɑːliːɡ]',
       'partOfSpeech': 'noun',
       'definition': '동료',
       'example': 'a colleague of mine from the office',
@@ -604,7 +363,6 @@ class FlashCard {
     },
     {
       'word': 'department',
-      'pronunciation': '[dɪ│pɑːrtmənt]',
       'partOfSpeech': 'noun',
       'definition': '부서',
       'example': 'the Department of Trade and Industry',
@@ -612,7 +370,6 @@ class FlashCard {
     },
     {
       'word': 'deserve',
-      'pronunciation': '[dɪˈzɜːrv]',
       'partOfSpeech': 'verb',
       'definition': '받을만 하다',
       'example': 'You deserve a rest after all that hard work.',
@@ -620,7 +377,6 @@ class FlashCard {
     },
     {
       'word': 'employee',
-      'pronunciation': '[ɪmˈplɔɪiː]',
       'partOfSpeech': 'noun',
       'definition': '직원',
       'example': 'The firm has over 500 employees.',
@@ -628,7 +384,6 @@ class FlashCard {
     },
     {
       'word': 'promote',
-      'pronunciation': '[prə│moʊt]',
       'partOfSpeech': 'verb',
       'definition': '홍보하다, 승진시키다',
       'example': 'She worked hard and was soon promoted.',
@@ -636,7 +391,6 @@ class FlashCard {
     },
     {
       'word': 'regret',
-      'pronunciation': '[rɪˈɡret]',
       'partOfSpeech': 'verb',
       'definition': '후회하다, 유감',
       'example': "If you don’t do it now, you’ll only regret it.",
@@ -644,7 +398,6 @@ class FlashCard {
     },
     {
       'word': 'absence',
-      'pronunciation': '[ˈæbsəns]',
       'partOfSpeech': 'noun',
       'definition': '결석, 부재',
       'example': 'absence from work',
@@ -652,7 +405,6 @@ class FlashCard {
     },
     {
       'word': 'afford',
-      'pronunciation': '[əˈfɔːrd]',
       'partOfSpeech': 'verb',
       'definition': '여유가 있다',
       'example': 'Can we afford a new car?',
@@ -660,7 +412,6 @@ class FlashCard {
     },
     {
       'word': 'aware',
-      'pronunciation': '[əˈwer]',
       'partOfSpeech': 'adjective',
       'definition': '알고 있는',
       'example':
@@ -669,7 +420,6 @@ class FlashCard {
     },
     {
       'word': 'carelessness',
-      'pronunciation': '[ˈkerləsnes]',
       'partOfSpeech': 'noun',
       'definition': '부주의',
       'example': 'a moment of carelessness',
@@ -677,7 +427,6 @@ class FlashCard {
     },
     {
       'word': 'disappoint',
-      'pronunciation': '[ˌdɪsəˈpɔɪnt]',
       'partOfSpeech': 'verb',
       'definition': '실망시키다',
       'example':
@@ -686,7 +435,6 @@ class FlashCard {
     },
     {
       'word': 'duty',
-      'pronunciation': '[ˈduːti]',
       'partOfSpeech': 'noun',
       'definition': '의무, 임무',
       'example': 'It is my duty to report it to the police.',
@@ -694,7 +442,6 @@ class FlashCard {
     },
     {
       'word': 'fulfill',
-      'pronunciation': '[fulˈfɪl]',
       'partOfSpeech': 'verb',
       'definition': '이행하다',
       'example': 'fulfill one\'s duties',
@@ -702,7 +449,6 @@ class FlashCard {
     },
     {
       'word': 'beneficial',
-      'pronunciation': '[ˌbenɪˈfɪʃl]',
       'partOfSpeech': 'adjective',
       'definition': '이로운',
       'example': 'A good diet is beneficial to health.',
@@ -710,7 +456,6 @@ class FlashCard {
     },
     {
       'word': 'irresponsible',
-      'pronunciation': '[│ɪrɪ│spɑːnsəbl]',
       'partOfSpeech': 'adjective',
       'definition': '무책임한',
       'example': 'an irresponsible teenager',
@@ -718,7 +463,6 @@ class FlashCard {
     },
     {
       'word': 'unfortunate',
-      'pronunciation': '[ʌn│fɔːrtʃənət]',
       'partOfSpeech': 'adjective',
       'definition': '불행한, 유감스러운',
       'example': 'He was unfortunate to lose in the final round.',
@@ -726,7 +470,6 @@ class FlashCard {
     },
     {
       'word': 'application',
-      'pronunciation': '[ˌæplɪˈkeɪʃn]',
       'partOfSpeech': 'noun',
       'definition': '적용, 응용',
       'example': 'the application of new technology to teaching',
@@ -734,7 +477,6 @@ class FlashCard {
     },
     {
       'word': 'chemistry',
-      'pronunciation': '[ˈkemɪstri]',
       'partOfSpeech': 'noun',
       'definition': '화학',
       'example': 'a degree in chemistry',
@@ -742,7 +484,6 @@ class FlashCard {
     },
     {
       'word': 'coursework',
-      'pronunciation': '[ˈkɔːrswɜːrk]',
       'partOfSpeech': 'noun',
       'definition': '학습 과제, 교과 학습',
       'example': 'Coursework accounts for 40% of the final marks.',
@@ -750,7 +491,6 @@ class FlashCard {
     },
     {
       'word': 'electrical',
-      'pronunciation': '[ɪˈlektrɪkl]',
       'partOfSpeech': 'adjective',
       'definition': '전기의, 전자의',
       'example': 'an electrical fault in the engine',
@@ -758,7 +498,6 @@ class FlashCard {
     },
     {
       'word': 'fascinated',
-      'pronunciation': '[ˈfæsɪneɪtɪd]',
       'partOfSpeech': 'adjective',
       'definition': '매료된',
       'example':
@@ -767,7 +506,6 @@ class FlashCard {
     },
     {
       'word': 'flexible',
-      'pronunciation': '[ˈfleksəbl]',
       'partOfSpeech': 'adjective',
       'definition': '유연한',
       'example': 'flexible plastic tubing',
@@ -775,7 +513,6 @@ class FlashCard {
     },
     {
       'word': 'honored',
-      'pronunciation': '[ɑ́nərd]',
       'partOfSpeech': 'adjective',
       'definition': '명예로운, 영광으로 생각하여',
       'example': 'I feel highly honored by your kindness.',
@@ -783,7 +520,6 @@ class FlashCard {
     },
     {
       'word': 'independent',
-      'pronunciation': '[ˌɪndɪˈpendənt]',
       'partOfSpeech': 'adjective',
       'definition': '독립한, 무소속의',
       'example': 'an independent nation',
@@ -791,7 +527,6 @@ class FlashCard {
     },
     {
       'word': 'introductory',
-      'pronunciation': '[ˌɪntrəˈdʌktəri]',
       'partOfSpeech': 'adjective',
       'definition': '소개의, 서두의',
       'example': 'introductory chapters',
@@ -799,7 +534,6 @@ class FlashCard {
     },
     {
       'word': 'laboratory',
-      'pronunciation': '[ləˈbɔːrətɔːri]',
       'partOfSpeech': 'noun',
       'definition': '실험실',
       'example': 'a research laboratory',
@@ -807,7 +541,6 @@ class FlashCard {
     },
     {
       'word': 'term',
-      'pronunciation': '[tɜːrm]',
       'partOfSpeech': 'noun',
       'definition': '용어, 기간',
       'example': 'a technical/legal/scientific, etc. term',
@@ -815,7 +548,6 @@ class FlashCard {
     },
     {
       'word': 'transparent',
-      'pronunciation': '[trænsˈpærənt]',
       'partOfSpeech': 'adjective',
       'definition': '투명한',
       'example': 'a man of transparent honesty',
