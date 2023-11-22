@@ -29,16 +29,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 0;
+  int _currentIndex = 1;
 
   final List<Widget> _pages = [
-    const MyHomeScreen(),
-    const GridViewPage(),
+    const RecomendPage(),
+    const ListViewPage(),
     const DicPage(),
   ];
 
   final List<String> _titles = [
-    '단어장 홈',
+    '추천 단어장',
     '내 단어장',
     '사전검색',
   ];
@@ -48,12 +48,12 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('암기빵'),
-        leading: _currentIndex != 0
+        leading: _currentIndex != 1
             ? IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () {
                   setState(() {
-                    _currentIndex = 0;
+                    _currentIndex = 1;
                   });
                 },
               )
@@ -72,9 +72,9 @@ class _MyHomePageState extends State<MyHomePage> {
             BottomNavigationBarItem(
               icon: Icon(
                 i == 0
-                    ? Icons.home
+                    ? Icons.star
                     : i == 1
-                        ? Icons.star_border_sharp
+                        ? Icons.home
                         : Icons.collections_bookmark_rounded,
               ),
               label: _titles[i],
@@ -85,8 +85,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class MyHomeScreen extends StatelessWidget {
-  const MyHomeScreen({super.key});
+class RecomendPage extends StatelessWidget {
+  const RecomendPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -162,16 +162,16 @@ class GridItem extends StatelessWidget {
   }
 }
 
-class GridViewPage extends StatefulWidget {
-  const GridViewPage({Key? key}) : super(key: key);
+class ListViewPage extends StatefulWidget {
+  const ListViewPage({Key? key}) : super(key: key);
 
   @override
-  State<GridViewPage> createState() {
-    return _GridViewPageState();
+  State<ListViewPage> createState() {
+    return _ListViewPageState();
   }
 }
 
-class _GridViewPageState extends State<GridViewPage> {
+class _ListViewPageState extends State<ListViewPage> {
   List<String> items = ['Item : 1', 'Item :2', 'Item : 3'];
 
   void _onItemTap(int index) {
@@ -254,20 +254,20 @@ class _GridViewPageState extends State<GridViewPage> {
     );
   }
 
-  Future<void> _showInputDialog() async {
+  Future<void> _showNewDialog() async {
     String newItem = ''; // 사용자가 입력한 새로운 아이템 이름
 
     return await showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('새로운 아이템 추가'),
+          title: const Text('새로운 단어장 추가'),
           content: TextField(
             onChanged: (value) {
               newItem = value;
             },
             decoration: const InputDecoration(
-              hintText: '새로운 아이템 이름',
+              hintText: '새로운 단어장 이름',
             ),
           ),
           actions: <Widget>[
@@ -309,12 +309,7 @@ class _GridViewPageState extends State<GridViewPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showInputDialog();
-          // setState(() {
-          //   // Add a new item to the list
-          //   int newItemIndex = items.length;
-          //   items.add('Item : $newItemIndex');
-          // });
+          _showNewDialog();
         },
         child: const Icon(Icons.add),
       ),
@@ -325,14 +320,119 @@ class _GridViewPageState extends State<GridViewPage> {
 class DicPage extends StatelessWidget {
   const DicPage({Key? key}) : super(key: key);
 
+  Future<void> _showInputDialog(BuildContext context) async {
+    // Controllers for text fields
+    TextEditingController wordController = TextEditingController();
+    TextEditingController partOfSpeechController = TextEditingController();
+    TextEditingController definitionController = TextEditingController();
+    TextEditingController memoController = TextEditingController();
+
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        // Get the device width
+        double deviceWidth = MediaQuery.of(context).size.width;
+        double deviceHeight = MediaQuery.of(context).size.height;
+
+        // Calculate the dialog width (you can adjust the margin as needed)
+        double dialogWidth = deviceWidth - 20.0;
+        double dialogHeight = deviceHeight - 315.0;
+
+        return AlertDialog(
+          title: const Text('새로운 단어 추가'),
+          content: SizedBox(
+            width: dialogWidth,
+            height: dialogHeight,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildInputField('단어', wordController),
+                  _buildInputField('품사', partOfSpeechController),
+                  _buildInputField('뜻', definitionController),
+                  _buildInputField('기타 메모', memoController, maxLines: 7),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // 취소
+              },
+              style: TextButton.styleFrom(
+                textStyle: const TextStyle(fontSize: 16.0), // 텍스트 크기 조절
+              ),
+              child: const Text('취소'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Access the values using the controllers
+                final String word = wordController.text;
+                final String partOfSpeech = partOfSpeechController.text;
+                final String definition = definitionController.text;
+                final String memo = memoController.text;
+
+                // Do something with the values (e.g., save to database)
+                // ...
+
+                Navigator.of(context).pop(); // 다이얼로그 닫기
+              },
+              style: TextButton.styleFrom(
+                textStyle: const TextStyle(fontSize: 16.0), // 텍스트 크기 조절
+              ),
+              child: const Text('추가'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+// Helper method to build input fields
+  Widget _buildInputField(String label, TextEditingController controller,
+      {int maxLines = 1}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.0),
+              border: Border.all(color: Colors.grey),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: TextField(
+                controller: controller,
+                maxLines: maxLines,
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
+    return Scaffold(
+      body: const Center(
         child: Text(
           '사전 화면',
           style: TextStyle(fontSize: 24.0),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _showInputDialog(context);
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }
