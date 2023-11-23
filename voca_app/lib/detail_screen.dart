@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voca_app/filp_card_page.dart';
+import 'package:voca_app/quiz_screen.dart';
 
 class DetailScreen extends StatelessWidget {
   final List<Map<String, String>> flashcards;
@@ -29,7 +30,17 @@ class DetailScreen extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text('퀴즈풀기', strutStyle: StrutStyle(fontSize: 20.0)),
+        TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const QuizChoice(),
+              ),
+            );
+          },
+          child: const Text('퀴즈풀기', style: TextStyle(fontSize: 20.0)),
+        ),
         FloatingActionButton(
           child: const Icon(Icons.play_arrow),
           onPressed: () {
