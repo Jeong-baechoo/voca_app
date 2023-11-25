@@ -249,7 +249,6 @@ class _SpellingQuizScreenState extends State<SpellingQuizScreen> {
     );
   }
 
-
   void passQuestion() {
     setState(() {
       isCorrect = false;
