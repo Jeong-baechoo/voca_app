@@ -25,6 +25,7 @@ class _SpellingQuizScreenState extends State<SpellingQuizScreen> {
   bool? isCorrect; // 사용자의 답변이 정확한지 추적하는 변수
   int score = 0; // 사용자의 점수
   List<Map<String, String>> quizQuestions = []; // 퀴즈 질문과 답변을 저장하는 리스트
+  FocusNode answerFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -42,15 +43,14 @@ class _SpellingQuizScreenState extends State<SpellingQuizScreen> {
   // 사용자의 답변을 정답과 비교
   void checkAnswer() {
     String userAnswer = answerController.text.toLowerCase().trim();
-    String correctAnswer =
-        quizQuestions[currentIndex]['word']!.toLowerCase().trim();
+    String correctAnswer = quizQuestions[currentIndex]['word']!.toLowerCase().trim();
 
     setState(() {
       isCorrect = userAnswer == correctAnswer; // 비교에 기반하여 isCorrect 설정
       if (isCorrect!) score++; // 답이 정확하면 점수 증가
     });
 
-    Future.delayed(const Duration(seconds: 2), nextQuestion);
+    Future.delayed(const Duration(seconds: 5), nextQuestion);
   }
 
   void nextQuestion() {
@@ -59,6 +59,7 @@ class _SpellingQuizScreenState extends State<SpellingQuizScreen> {
         currentIndex++; // 다음 질문으로 이동
         answerController.clear(); // 답변 입력 필드 지우기
         isCorrect = null;
+        answerFocusNode.requestFocus();
       } else {
         showScore(); // 모든 질문에 답한 경우 최종 점수 표시
       }
@@ -70,15 +71,15 @@ class _SpellingQuizScreenState extends State<SpellingQuizScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Quiz Completed'),
-          content: Text('Your Score: $score / 10'),
+          title: const Text('퀴즈 완료'),
+          content: Text('점수: $score / 10'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 resetQuiz(); // 새 라운드를 위해 퀴즈 재설정
               },
-              child: const Text('Play Again'),
+              child: const Text('다시 진행'),
             ),
           ],
         );
@@ -100,52 +101,66 @@ class _SpellingQuizScreenState extends State<SpellingQuizScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text('Spelling Quiz (${currentIndex + 1}/${quizQuestions.length})'),
+        title: Text(
+          '스펠링 퀴즈 (${currentIndex + 1}/${quizQuestions.length})'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              'Definition: ${quizQuestions[currentIndex]['definition']}',
-              style: const TextStyle(fontSize: 18.0),
-            ),
-            const SizedBox(height: 20.0),
-            TextField(
-              controller: answerController,
-              decoration: const InputDecoration(
-                labelText: 'Enter Spelling',
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                '${quizQuestions[currentIndex]['definition']}',
+                style: const TextStyle(fontSize: 50.0),
               ),
-            ),
-            const SizedBox(height: 20.0),
-            if (isCorrect != null)
-              Column(
-                children: [
-                  Text(isCorrect! ? 'Correct!' : 'Incorrect!'),
-                  const SizedBox(height: 10.0),
-                  Text('Word: ${quizQuestions[currentIndex]['word']}'),
-                ],
-              ),
-            Align(
-              alignment: Alignment.topRight,
-              child: ElevatedButton(
-                onPressed: passQuestion,
-                child: const Text('Pass'),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: checkAnswer,
-                  child: const Text('Check Answer'),
+              const SizedBox(height: 20.0),
+              TextField(
+                focusNode: answerFocusNode,
+                controller: answerController,
+                decoration: const InputDecoration(
+                  labelText: '스펠링 입력',
                 ),
-              ],
-            ),
-          ],
+                onEditingComplete: () {
+                  checkAnswer();
+                  answerFocusNode.unfocus();
+                },
+              ),
+              const SizedBox(height: 20.0),
+              if (isCorrect != null)
+                Column(
+                  children: [
+                    Text(
+                      isCorrect! ? '정답' : '오답',
+                      style: TextStyle(
+                        fontSize: 60.0,
+                        fontWeight: FontWeight.bold,
+                        color: isCorrect! ? Colors.green : Colors.red,
+                      ),
+                    ),
+                    const SizedBox(height: 10.0),
+                    Text(
+                      '${quizQuestions[currentIndex]['word']}',
+                      style: const TextStyle(
+                        fontSize: 60.0,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ],
+                ),
+                Visibility(
+                  visible: isCorrect == null,
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: ElevatedButton(
+                      onPressed: passQuestion,
+                      child: const Text('Pass'),
+                    ),
+                  )
+                ),
+            ],
+          ),
         ),
       ),
     );
