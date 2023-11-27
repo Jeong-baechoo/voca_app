@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:voca_app/detail_screen.dart';
+import 'package:voca_app/dic_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -310,127 +311,6 @@ class _ListViewPageState extends State<ListViewPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _showNewDialog();
-        },
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-}
-
-class DicPage extends StatelessWidget {
-  const DicPage({Key? key}) : super(key: key);
-
-  Future<void> _showInputDialog(BuildContext context) async {
-    // Controllers for text fields
-    TextEditingController wordController = TextEditingController();
-    TextEditingController partOfSpeechController = TextEditingController();
-    TextEditingController definitionController = TextEditingController();
-    TextEditingController memoController = TextEditingController();
-
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        // Get the device width
-        double deviceWidth = MediaQuery.of(context).size.width;
-        double deviceHeight = MediaQuery.of(context).size.height;
-
-        // Calculate the dialog width (you can adjust the margin as needed)
-        double dialogWidth = deviceWidth - 20.0;
-        double dialogHeight = deviceHeight - 315.0;
-
-        return AlertDialog(
-          title: const Text('새로운 단어 추가'),
-          content: SizedBox(
-            width: dialogWidth,
-            height: dialogHeight,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildInputField('단어', wordController),
-                  _buildInputField('품사', partOfSpeechController),
-                  _buildInputField('뜻', definitionController),
-                  _buildInputField('기타 메모', memoController, maxLines: 7),
-                ],
-              ),
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // 취소
-              },
-              style: TextButton.styleFrom(
-                textStyle: const TextStyle(fontSize: 16.0), // 텍스트 크기 조절
-              ),
-              child: const Text('취소'),
-            ),
-            TextButton(
-              onPressed: () {
-                // Access the values using the controllers
-                final String word = wordController.text;
-                final String partOfSpeech = partOfSpeechController.text;
-                final String definition = definitionController.text;
-                final String memo = memoController.text;
-
-                // Do something with the values (e.g., save to database)
-                // ...
-
-                Navigator.of(context).pop(); // 다이얼로그 닫기
-              },
-              style: TextButton.styleFrom(
-                textStyle: const TextStyle(fontSize: 16.0), // 텍스트 크기 조절
-              ),
-              child: const Text('추가'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-// Helper method to build input fields
-  Widget _buildInputField(String label, TextEditingController controller,
-      {int maxLines = 1}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.0),
-              border: Border.all(color: Colors.grey),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextField(
-                controller: controller,
-                maxLines: maxLines,
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: const Center(
-        child: Text(
-          '사전 화면',
-          style: TextStyle(fontSize: 24.0),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showInputDialog(context);
         },
         child: const Icon(Icons.add),
       ),
