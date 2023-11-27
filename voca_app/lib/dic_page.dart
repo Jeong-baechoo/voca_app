@@ -287,67 +287,72 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                     const SizedBox(height: 20),
                     // Wrap the word description section with a Container
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Word, Pronunciation, and Meanings sections...
-                          Text(
-                            '${wordDescription?.word}',
-                            style: const TextStyle(
-                                fontSize: 30, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            '${wordDescription?.phonetics}',
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                          const SizedBox(height: 20),
-                          ...?wordDescription?.meanings.map((meaning) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  meaning.partOfSpeech,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                ...meaning.definitions
-                                    .asMap()
-                                    .entries
-                                    .map((defEntry) {
-                                  final int definitionIndex =
-                                      defEntry.key + 1; // Definition numbering
-                                  final Definition definition = defEntry.value;
+                    Visibility(
+                      visible: wordDescription != null,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Word, Pronunciation, and Meanings sections...
 
-                                  return Padding(
-                                    padding: const EdgeInsets.only(left: 16),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                            '  $definitionIndex. ${definition.meaning}'),
-                                        const SizedBox(height: 12),
-                                        Text('    ${definition.example}'),
-                                        Text('    ${definition.translation}'),
-                                        const SizedBox(height: 8)
-                                      ],
+                            Text(
+                              '${wordDescription?.word}',
+                              style: const TextStyle(
+                                  fontSize: 30, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              '[${wordDescription?.phonetics}]',
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                            const SizedBox(height: 20),
+                            ...?wordDescription?.meanings.map((meaning) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    meaning.partOfSpeech,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                  );
-                                }),
-                                const SizedBox(height: 10),
-                              ],
-                            );
-                          }),
-                        ],
+                                  ),
+                                  ...meaning.definitions
+                                      .asMap()
+                                      .entries
+                                      .map((defEntry) {
+                                    final int definitionIndex = defEntry.key +
+                                        1; // Definition numbering
+                                    final Definition definition =
+                                        defEntry.value;
+
+                                    return Padding(
+                                      padding: const EdgeInsets.only(left: 16),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                              '  $definitionIndex. ${definition.meaning}'),
+                                          const SizedBox(height: 12),
+                                          Text('    ${definition.example}'),
+                                          Text('    ${definition.translation}'),
+                                          const SizedBox(height: 8)
+                                        ],
+                                      ),
+                                    );
+                                  }),
+                                  const SizedBox(height: 10),
+                                ],
+                              );
+                            }),
+                          ],
+                        ),
                       ),
                     ),
                   ],
