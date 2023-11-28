@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voca_app/mutiple_choice.dart';
 
 import 'data/flash_card.dart';
 
@@ -9,9 +10,6 @@ class QuizChoice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('퀴즈 종류 선택'),
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -25,7 +23,12 @@ class QuizChoice extends StatelessWidget {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Handle button click
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Quiz(flashCard: flashCard),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
