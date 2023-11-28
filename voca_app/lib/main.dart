@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:voca_app/detail_screen.dart';
 import 'package:voca_app/dic_page.dart';
+import 'package:voca_app/quiz_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,36 +31,26 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 1;
+  int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    const RecomendPage(),
     const ListViewPage(),
+    const RecomendPage(),
+    const QuizChoice(),
     const DicPage(),
   ];
 
   final List<String> _titles = [
-    '추천 단어장',
     '내 단어장',
+    '추천 단어장',
+    '학습하기',
     '사전검색',
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('암기빵'),
-        leading: _currentIndex != 1
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  setState(() {
-                    _currentIndex = 1;
-                  });
-                },
-              )
-            : null,
-      ),
+      appBar: AppBar(title: Text(_titles[_currentIndex])),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -68,15 +59,21 @@ class _MyHomePageState extends State<MyHomePage> {
             _currentIndex = index;
           });
         },
+        backgroundColor: Colors.white,
+        selectedItemColor: const Color.fromARGB(255, 94, 149, 235),
+        unselectedItemColor: Colors.grey,
+        showUnselectedLabels: true,
         items: [
           for (int i = 0; i < _titles.length; i++)
             BottomNavigationBarItem(
               icon: Icon(
                 i == 0
-                    ? Icons.star
+                    ? Icons.home
                     : i == 1
-                        ? Icons.home
-                        : Icons.collections_bookmark_rounded,
+                        ? Icons.star
+                        : i == 2
+                            ? Icons.quiz
+                            : Icons.search,
               ),
               label: _titles[i],
             ),
