@@ -68,6 +68,7 @@ class _DetailScreenState extends State<DetailScreen> {
         ),
         const SizedBox(width: 16), // 추가한 부분: 간격 조절을 위한 SizedBox
         FloatingActionButton(
+          /*TO DO: speed dial적용*/
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
             transitionBuilder: (Widget child, Animation<double> animation) {
