@@ -35,7 +35,10 @@ class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    ListViewPage(flashCard: flashCard),
+    DetailScreen(
+      flashcards: flashCard.flashcards,
+      flashcard: flashCard,
+    ),
     const RecomendPage(),
     QuizChoice(flashCard: flashCard),
     const DicPage(),
@@ -184,6 +187,7 @@ class _ListViewPageState extends State<ListViewPage> {
       MaterialPageRoute(
         builder: (context) => DetailScreen(
           flashcards: flashCard.flashcards,
+          flashcard: flashCard,
         ),
       ),
     );

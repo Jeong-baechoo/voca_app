@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:voca_app/data/flash_card.dart';
 import 'package:voca_app/filp_card_page.dart';
 
 class DetailScreen extends StatefulWidget {
   final List<Map<String, String>> flashcards;
 
-  const DetailScreen({Key? key, required this.flashcards}) : super(key: key);
+  const DetailScreen(
+      {Key? key, required this.flashcards, required FlashCard flashcard})
+      : super(key: key);
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
 }
 
 class _DetailScreenState extends State<DetailScreen> {
+  bool isSecondButtonPressed = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('상세 화면'),
-      ),
       body: Column(
         children: [
           const SizedBox(height: 20),
@@ -34,6 +36,25 @@ class _DetailScreenState extends State<DetailScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        DropdownButton<String>(
+          // 드롭다운 버튼 설정
+          value: 'Dropdown Item 1', // 현재 선택된 아이템
+          items: <String>[
+            'Dropdown Item 1',
+            'Dropdown Item 2',
+            'Dropdown Item 3'
+          ].map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          onChanged: (String? newValue) {
+            // 드롭다운 아이템이 변경되었을 때 호출되는 콜백
+            print('Selected: $newValue');
+          },
+        ),
+        const Spacer(),
         FloatingActionButton(
           child: const Icon(Icons.play_arrow),
           onPressed: () {
@@ -43,6 +64,29 @@ class _DetailScreenState extends State<DetailScreen> {
                 builder: (context) => const FilpCardPage(),
               ),
             );
+          },
+        ),
+        const SizedBox(width: 16), // 추가한 부분: 간격 조절을 위한 SizedBox
+        FloatingActionButton(
+          /*TO DO: speed dial적용*/
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return ScaleTransition(
+                scale: animation,
+                child: child,
+              );
+            },
+            child: isSecondButtonPressed
+                ? const Icon(Icons.remove, key: Key('remove'))
+                : const Icon(Icons.add, key: Key('add')),
+          ),
+          onPressed: () {
+            setState(() {
+              isSecondButtonPressed =
+                  !isSecondButtonPressed; // 상태를 변경하여 UI를 업데이트
+            });
+            print('Second Floating Action Button Pressed');
           },
         ),
       ],
