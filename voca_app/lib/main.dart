@@ -33,11 +33,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
-
+  static FlashCard flashCard = FlashCard();
   final List<Widget> _pages = [
     DetailScreen(
-      flashcards: flashCard.flashcards,
-      flashcard: flashCard,
+      flashCard: flashCard,
     ),
     const RecomendPage(),
     QuizChoice(flashCard: flashCard),
@@ -50,8 +49,6 @@ class _MyHomePageState extends State<MyHomePage> {
     '학습하기',
     '사전검색',
   ];
-
-  static FlashCard flashCard = FlashCard();
 
   @override
   Widget build(BuildContext context) {
@@ -172,23 +169,18 @@ class ListViewPage extends StatefulWidget {
 
   @override
   State<ListViewPage> createState() {
-    return _ListViewPageState(flashCard);
+    return _ListViewPageState();
   }
 }
 
 class _ListViewPageState extends State<ListViewPage> {
   List<String> items = ['Item : 1', 'Item :2', 'Item : 3'];
-  final FlashCard flashCard;
 
-  _ListViewPageState(this.flashCard);
   void _onItemTap(int index) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DetailScreen(
-          flashcards: flashCard.flashcards,
-          flashcard: flashCard,
-        ),
+        builder: (context) => DetailScreen(flashCard: widget.flashCard),
       ),
     );
   }

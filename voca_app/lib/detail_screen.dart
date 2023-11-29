@@ -3,11 +3,8 @@ import 'package:voca_app/data/flash_card.dart';
 import 'package:voca_app/filp_card_page.dart';
 
 class DetailScreen extends StatefulWidget {
-  final List<Map<String, String>> flashcards;
-
-  const DetailScreen(
-      {Key? key, required this.flashcards, required FlashCard flashcard})
-      : super(key: key);
+  final FlashCard flashCard;
+  const DetailScreen({Key? key, required this.flashCard}) : super(key: key);
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
@@ -122,9 +119,9 @@ class _DetailScreenState extends State<DetailScreen> {
 
   Widget _buildSavedWordsList() {
     return ListView.builder(
-      itemCount: widget.flashcards.length,
+      itemCount: widget.flashCard.flashcards.length,
       itemBuilder: (context, index) {
-        final currentFlashcard = widget.flashcards[index];
+        final currentFlashcard = widget.flashCard.flashcards[index];
 
         return Dismissible(
           key: UniqueKey(),
@@ -197,7 +194,7 @@ class _DetailScreenState extends State<DetailScreen> {
           onDismissed: (direction) {
             // 삭제가 완료되면 리스트에서도 해당 아이템을 제거
             setState(() {
-              widget.flashcards.removeAt(index);
+              widget.flashCard.flashcards.removeAt(index);
             });
           },
         );
