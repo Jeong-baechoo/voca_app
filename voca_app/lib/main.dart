@@ -34,6 +34,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
   static FlashCard flashCard = FlashCard();
+
   final List<Widget> _pages = [
     DetailScreen(
       flashCard: flashCard,
@@ -116,6 +117,7 @@ class RecomendPage extends StatelessWidget {
 class CategoryGrid extends StatelessWidget {
   final String category;
   final List<String> items;
+  static FlashCard flashCard = FlashCard();
 
   const CategoryGrid({super.key, required this.category, required this.items});
 
@@ -137,7 +139,27 @@ class CategoryGrid extends StatelessWidget {
           ),
           itemCount: items.length,
           itemBuilder: (BuildContext context, int index) {
-            return GridItem(item: items[index]);
+            return InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Scaffold(
+                        appBar: AppBar(
+                          title: const Text('단어장'),
+                          leading: IconButton(
+                            icon: const Icon(Icons.arrow_back),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ),
+                        body: DetailScreen(flashCard: flashCard),
+                      ),
+                    ));
+              },
+              child: GridItem(item: items[index]),
+            );
           },
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:voca_app/data/flash_card.dart';
+import 'package:voca_app/dic_page.dart';
 import 'package:voca_app/filp_card_page.dart';
+import 'package:voca_app/main.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class DetailScreen extends StatefulWidget {
   final FlashCard flashCard;
@@ -12,6 +15,7 @@ class DetailScreen extends StatefulWidget {
 
 class _DetailScreenState extends State<DetailScreen> {
   bool isSecondButtonPressed = false;
+  static FlashCard flashCard = FlashCard();
 
   @override
   Widget build(BuildContext context) {
@@ -33,23 +37,35 @@ class _DetailScreenState extends State<DetailScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        DropdownButton<String>(
-          // 드롭다운 버튼 설정
-          value: 'Dropdown Item 1', // 현재 선택된 아이템
-          items: <String>[
-            'Dropdown Item 1',
-            'Dropdown Item 2',
-            'Dropdown Item 3'
-          ].map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-          onChanged: (String? newValue) {
-            // 드롭다운 아이템이 변경되었을 때 호출되는 콜백
-            print('Selected: $newValue');
+        InkWell(
+          onTap: () {
+            // '단어장 선택' 텍스트를 눌렀을 때의 동작을 여기에 추가
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Scaffold(
+                    appBar: AppBar(
+                      title: const Text('단어장 선택'),
+                      leading: IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                    body: ListViewPage(flashCard: flashCard),
+                  ),
+                ));
           },
+          child: const Text(
+            '단어장 선택',
+            style: TextStyle(
+              // 스타일은 필요에 따라 변경 가능
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue, // 원하는 색상
+            ),
+          ),
         ),
         const Spacer(),
         FloatingActionButton(
@@ -64,28 +80,61 @@ class _DetailScreenState extends State<DetailScreen> {
           },
         ),
         const SizedBox(width: 16), // 추가한 부분: 간격 조절을 위한 SizedBox
-        FloatingActionButton(
-          /*TO DO: speed dial적용*/
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            transitionBuilder: (Widget child, Animation<double> animation) {
-              return ScaleTransition(
-                scale: animation,
-                child: child,
-              );
+        _getFAB(),
+      ],
+    );
+  }
+
+  Widget _getFAB() {
+    return SpeedDial(
+      animatedIcon: AnimatedIcons.menu_close,
+      animatedIconTheme: const IconThemeData(size: 22),
+      visible: true,
+      curve: Curves.bounceIn,
+      direction: SpeedDialDirection.down,
+      children: [
+        // FAB 1
+        SpeedDialChild(
+            child: const Icon(Icons.search),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Scaffold(
+                      appBar: AppBar(
+                        title: const Text('사전 검색'),
+                        leading: IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
+                      body: const DicPage(),
+                    ),
+                  ));
             },
-            child: isSecondButtonPressed
-                ? const Icon(Icons.remove, key: Key('remove'))
-                : const Icon(Icons.add, key: Key('add')),
-          ),
-          onPressed: () {
-            setState(() {
-              isSecondButtonPressed =
-                  !isSecondButtonPressed; // 상태를 변경하여 UI를 업데이트
-            });
-            print('Second Floating Action Button Pressed');
-          },
-        ),
+            backgroundColor: Colors.lightBlue,
+            label: ' 사전에서 추가',
+            labelStyle: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+                fontSize: 16.0),
+            labelBackgroundColor: Colors.lightBlue),
+        SpeedDialChild(
+            child: const Icon(Icons.add),
+            backgroundColor: Colors.lightBlue,
+            onTap: () {
+              setState(() {
+                //_counter = 0;
+              });
+            },
+            label: '직접 추가',
+            labelStyle: const TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+                fontSize: 16.0),
+            labelBackgroundColor: Colors.lightBlue),
       ],
     );
   }
