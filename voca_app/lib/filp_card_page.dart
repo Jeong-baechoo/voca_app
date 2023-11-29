@@ -135,3 +135,72 @@ class FlipCardContainer extends StatelessWidget {
     );
   }
 }
+
+class ListScreen extends StatefulWidget {
+  final FlashCard flashCard;
+  const ListScreen({Key? key, required this.flashCard}) : super(key: key);
+
+  @override
+  State<ListScreen> createState() => _ListScreenState();
+}
+
+class _ListScreenState extends State<ListScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _buildSavedWordsList(),
+    );
+  }
+
+  Widget _buildSavedWordsList() {
+    return Scaffold(
+        body: ListView.builder(
+            itemCount: widget.flashCard.flashcards.length,
+            itemBuilder: (context, index) {
+              final currentFlashcard = widget.flashCard.flashcards[index];
+              return Column(
+                children: <Widget>[
+                  ListTile(
+                    title: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                currentFlashcard['word']!,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall!
+                                    .copyWith(
+                                      color: Colors.black,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                '품사: ${currentFlashcard['partOfSpeech']!}',
+                                style: const TextStyle(color: Colors.green),
+                              ),
+                              Text(
+                                currentFlashcard['definition']!,
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(color: Color.fromARGB(255, 170, 170, 170)),
+                ],
+              );
+            }));
+  }
+}

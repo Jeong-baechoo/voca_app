@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:voca_app/data/flash_card.dart';
 import 'package:voca_app/detail_screen.dart';
 import 'package:voca_app/dic_page.dart';
+import 'package:voca_app/filp_card_page.dart';
 import 'package:voca_app/quiz_screen.dart';
 
 void main() {
@@ -163,7 +164,7 @@ class CategoryGrid extends StatelessWidget {
                             },
                           ),
                         ),
-                        body: DetailScreen(flashCard: flashCard),
+                        body: ListScreen(flashCard: flashCard),
                       ),
                     ));
               },
