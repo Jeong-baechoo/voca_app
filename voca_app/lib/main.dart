@@ -39,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
     DetailScreen(
       flashCard: flashCard,
     ),
-    const RecomendPage(),
+    RecomendPage(),
     QuizChoice(flashCard: flashCard),
     const DicPage(),
   ];
@@ -88,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class RecomendPage extends StatelessWidget {
-  const RecomendPage({super.key});
+  RecomendPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -97,20 +97,29 @@ class RecomendPage extends StatelessWidget {
         child: Column(
           children: [
             // 각 카테고리별 그리드 생성
-            CategoryGrid(category: "추천", items: generateItems(6, "추천")),
-            CategoryGrid(category: "기초", items: generateItems(6, "기초")),
-            CategoryGrid(category: "초급", items: generateItems(6, "초급")),
-            CategoryGrid(category: "중급", items: generateItems(6, "중급")),
-            CategoryGrid(category: "고급", items: generateItems(6, "고급")),
+            CategoryGrid(category: "추천", items: generateItems(6, _recotitles)),
+            //CategoryGrid(category: "기초", items: generateItems(6, "기초")),
+            //CategoryGrid(category: "초급", items: generateItems(6, "초급")),
+            //CategoryGrid(category: "중급", items: generateItems(6, "중급")),
+            //CategoryGrid(category: "고급", items: generateItems(6, "고급")),
           ],
         ),
       ),
     );
   }
 
+  final List<String> _recotitles = [
+    '수능 영단어',
+    '토익 영단어',
+    '토플 영단어',
+    '토스 영단어',
+    '오픽 영단어',
+    '기타 영단어'
+  ];
+
   // 아이템 목록 생성
-  List<String> generateItems(int count, String category) {
-    return List.generate(count, (index) => "$category 영단어 ${index + 1}");
+  List<String> generateItems(int count, List recotitle) {
+    return List.generate(count, (index) => recotitle[index]);
   }
 }
 
@@ -198,15 +207,6 @@ class ListViewPage extends StatefulWidget {
 class _ListViewPageState extends State<ListViewPage> {
   List<String> items = ['Item : 1', 'Item :2', 'Item : 3'];
 
-  void _onItemTap(int index) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => DetailScreen(flashCard: widget.flashCard),
-      ),
-    );
-  }
-
   Future<bool> _showConfirmationDialog() async {
     return await showDialog<bool>(
           context: context,
@@ -234,45 +234,104 @@ class _ListViewPageState extends State<ListViewPage> {
         false; // 다이얼로그가 닫힐 경우 false 반환
   }
 
-  Widget buildListItem(int index) {
-    return Dismissible(
-      key: UniqueKey(),
-      confirmDismiss: (direction) async {
-        bool deleteConfirmed = await _showConfirmationDialog();
-        return deleteConfirmed;
+  Future<void> _showEditDialog(int index) async {
+    TextEditingController _controller = TextEditingController();
+
+    return await showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // 입력창
+              TextField(
+                controller: _controller,
+                decoration: const InputDecoration(
+                  hintText: '수정할 단어장 이름',
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  // 취소 버튼
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context); // 바텀 시트 닫기
+                    },
+                    child: const Text('취소'),
+                  ),
+                  // 확인 버튼
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        items[index] = 'Item : ${_controller.text}';
+                      });
+                      Navigator.pop(context); // 바텀 시트 닫기
+                    },
+                    child: const Text('확인'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
       },
-      background: Container(
-        color: Colors.red,
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.all(10),
-        child: const Icon(
-          Icons.delete,
-          color: Colors.white,
-        ),
-      ),
-      child: InkWell(
-        onTap: () {
-          _onItemTap(index);
-        },
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: <Widget>[
-                Center(
-                  child: Text("단어장 ${index + 1}"),
+    );
+  }
+
+  Widget buildListItem(int index) {
+    return InkWell(
+      onTap: () {
+        /* TODO: 단어장 클릭시 이동할 데이터 가져오기 */
+      },
+      onLongPress: () {
+        showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+            return Wrap(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.edit),
+                  title: const Text('수정'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _showEditDialog(index);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.delete),
+                  title: const Text('삭제'),
+                  onTap: () {
+                    _showConfirmationDialog().then((value) {
+                      if (value) {
+                        setState(() {
+                          items.removeAt(index); // 리스트에서 해당 항목 삭제
+                        });
+                      }
+                      Navigator.pop(context); // 바텀 시트 닫기
+                    });
+                  },
                 ),
               ],
-            ),
+            );
+          },
+        );
+      },
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: <Widget>[
+              Center(
+                child: Text(items[index]),
+              ),
+            ],
           ),
         ),
       ),
-      onDismissed: (direction) {
-        // 삭제가 완료되면 리스트에서도 해당 아이템을 제거
-        setState(() {
-          items.removeAt(index);
-        });
-      },
     );
   }
 

@@ -4,6 +4,7 @@ import 'package:voca_app/dic_page.dart';
 import 'package:voca_app/filp_card_page.dart';
 import 'package:voca_app/main.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:voca_app/model/wordDescription.dart';
 
 class DetailScreen extends StatefulWidget {
   final FlashCard flashCard;
@@ -67,31 +68,19 @@ class _DetailScreenState extends State<DetailScreen> {
             ),
           ),
         ),
-        const Spacer(),
-        FloatingActionButton(
-          child: const Icon(Icons.play_arrow),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const FilpCardPage(),
-              ),
-            );
-          },
-        ),
-        const SizedBox(width: 16), // 추가한 부분: 간격 조절을 위한 SizedBox
-        _getFAB(),
       ],
     );
   }
 
   Widget _getFAB() {
+    WordDescription? yourWordDescription;
     return SpeedDial(
-      animatedIcon: AnimatedIcons.menu_close,
+      icon: Icons.add,
+      activeIcon: Icons.undo_rounded,
       animatedIconTheme: const IconThemeData(size: 22),
       visible: true,
       curve: Curves.bounceIn,
-      direction: SpeedDialDirection.down,
+      direction: SpeedDialDirection.up,
       children: [
         // FAB 1
         SpeedDialChild(
@@ -124,10 +113,8 @@ class _DetailScreenState extends State<DetailScreen> {
         SpeedDialChild(
             child: const Icon(Icons.add),
             backgroundColor: Colors.lightBlue,
-            onTap: () {
-              setState(() {
-                //_counter = 0;
-              });
+            onTap: () async {
+              _showInputDialog(context, yourWordDescription);
             },
             label: '직접 추가',
             labelStyle: const TextStyle(
@@ -136,6 +123,107 @@ class _DetailScreenState extends State<DetailScreen> {
                 fontSize: 16.0),
             labelBackgroundColor: Colors.lightBlue),
       ],
+    );
+  }
+
+  Future<void> _showInputDialog(
+    BuildContext context,
+    WordDescription? yourWordDescription,
+  ) async {
+    TextEditingController wordController =
+        TextEditingController(text: yourWordDescription?.word);
+    TextEditingController phoneticsController =
+        TextEditingController(text: yourWordDescription?.phonetics);
+    TextEditingController partOfSpeechController = TextEditingController();
+    TextEditingController definitionController = TextEditingController();
+    TextEditingController memoController = TextEditingController();
+
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        double deviceWidth = MediaQuery.of(context).size.width;
+        double deviceHeight = MediaQuery.of(context).size.height;
+        double dialogWidth = deviceWidth - 20.0;
+        double dialogHeight = deviceHeight - 315.0;
+
+        return AlertDialog(
+          title: const Text('새로운 단어 추가'),
+          content: SizedBox(
+            width: dialogWidth,
+            height: dialogHeight,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildInputField('단어', wordController),
+                  _buildInputField('발음기호', phoneticsController),
+                  _buildInputField('품사', partOfSpeechController),
+                  _buildInputField('뜻', definitionController),
+                  _buildInputField('기타 메모', memoController),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // 취소
+              },
+              style: TextButton.styleFrom(
+                textStyle: const TextStyle(fontSize: 16.0),
+              ),
+              child: const Text('취소'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Access the values using the controllers
+                final String word = wordController.text;
+                final String partOfSpeech = partOfSpeechController.text;
+                final String definition = definitionController.text;
+                final String memo = memoController.text;
+
+                // Do something with the values (e.g., save to database)
+                // ...
+
+                Navigator.of(context).pop(); // 다이얼로그 닫기
+              },
+              style: TextButton.styleFrom(
+                textStyle: const TextStyle(fontSize: 16.0),
+              ),
+              child: const Text('추가'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildInputField(String label, TextEditingController controller,
+      {int maxLines = 1}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.0),
+              border: Border.all(color: Colors.grey),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: TextField(
+                controller: controller,
+                maxLines: maxLines,
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -167,87 +255,102 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   Widget _buildSavedWordsList() {
-    return ListView.builder(
-      itemCount: widget.flashCard.flashcards.length,
-      itemBuilder: (context, index) {
-        final currentFlashcard = widget.flashCard.flashcards[index];
+    WordDescription? yourWordDescription;
+    return Scaffold(
+        body: ListView.builder(
+          itemCount: widget.flashCard.flashcards.length,
+          itemBuilder: (context, index) {
+            final currentFlashcard = widget.flashCard.flashcards[index];
 
-        return Dismissible(
-          key: UniqueKey(),
-          confirmDismiss: (direction) async {
-            bool deleteConfirmed = await _showConfirmationDialog();
-            return deleteConfirmed;
-          },
-          background: Container(
-            color: Colors.red,
-            alignment: Alignment.centerRight,
-            padding: const EdgeInsets.all(10),
-            child: const Icon(
-              Icons.delete,
-              color: Colors.white,
-            ),
-          ),
-          child: InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const FilpCardPage(),
-                ),
-              );
-            },
-            child: Column(
-              children: <Widget>[
-                ListTile(
-                  title: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              currentFlashcard['word']!,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall!
-                                  .copyWith(
-                                    color: Colors.black,
-                                  ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              '품사: ${currentFlashcard['partOfSpeech']!}',
-                              style: const TextStyle(color: Colors.green),
-                            ),
-                            Text(
-                              currentFlashcard['definition']!,
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+            return InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FilpCardPage(),
                   ),
-                ),
-                const Divider(color: Color.fromARGB(255, 170, 170, 170)),
-              ],
-            ),
-          ),
-          onDismissed: (direction) {
-            // 삭제가 완료되면 리스트에서도 해당 아이템을 제거
-            setState(() {
-              widget.flashCard.flashcards.removeAt(index);
-            });
+                );
+              },
+              onLongPress: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Wrap(
+                      children: [
+                        ListTile(
+                          leading: const Icon(Icons.edit),
+                          title: const Text('수정'),
+                          onTap: () {
+                            Navigator.pop(context);
+                            _showInputDialog(context, yourWordDescription);
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.delete),
+                          title: const Text('삭제'),
+                          onTap: () {
+                            _showConfirmationDialog().then((value) {
+                              if (value) {
+                                setState(() {
+                                  widget.flashCard.flashcards
+                                      .removeAt(index); // 리스트에서 해당 항목 삭제
+                                });
+                              }
+                              Navigator.pop(context); // 바텀 시트 닫기
+                            });
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              child: Column(
+                children: <Widget>[
+                  ListTile(
+                    title: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                currentFlashcard['word']!,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall!
+                                    .copyWith(
+                                      color: Colors.black,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                '품사: ${currentFlashcard['partOfSpeech']!}',
+                                style: const TextStyle(color: Colors.green),
+                              ),
+                              Text(
+                                currentFlashcard['definition']!,
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(color: Color.fromARGB(255, 170, 170, 170)),
+                ],
+              ),
+            );
           },
-        );
-      },
-    );
+        ),
+        floatingActionButton: _getFAB());
   }
 }
