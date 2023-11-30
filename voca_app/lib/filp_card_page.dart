@@ -13,7 +13,7 @@ class FilpCardPage extends StatelessWidget {
   }
 
   Widget _renderFlipCardContainer(
-      Map<String, String> flashCard, double screenWidth) {
+      Map<String, dynamic> flashCard, double screenWidth) {
     return FlipCardContainer(
       flashCard: flashCard,
       containerWidth: screenWidth,
@@ -41,9 +41,9 @@ class FilpCardPage extends StatelessWidget {
                 flex: 4,
                 child: PageView(
                   children: List.generate(
-                    FlashCard().flashcards.length,
+                    flashcardsList.length,
                     (index) => _renderFlipCardContainer(
-                        FlashCard().flashcards[index], screenWidth),
+                        flashcardsList[index], screenWidth),
                   ),
                 ),
               ),
@@ -60,7 +60,7 @@ class FilpCardPage extends StatelessWidget {
 }
 
 class FlipCardContainer extends StatelessWidget {
-  final Map<String, String> flashCard;
+  final Map<String, dynamic> flashCard;
   final double containerWidth; // 화면 가로 폭에 따른 컨테이너 폭
 
   const FlipCardContainer({
@@ -85,8 +85,8 @@ class FlipCardContainer extends StatelessWidget {
             Text(
               flashCard['word']!,
               style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                  fontSize: containerWidth * 0.1,
-                  color: Colors.black // 원하는 크기로 조절
+                    fontSize: containerWidth * 0.1,
+                    color: Colors.black,
                   ),
             ),
           ],
@@ -102,31 +102,31 @@ class FlipCardContainer extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              flashCard['partOfSpeech']!,
+              flashCard['meanings'][0]['partOfSpeech']!,
               style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                    fontSize: containerWidth * 0.06, // 품사 폰트 크기를 폭의 6%로 조절
-                    color: Colors.green, // 품사 텍스트의 색상을 초록색으로 변경
+                    fontSize: containerWidth * 0.06,
+                    color: Colors.green,
                   ),
             ),
             Text(
-              flashCard['definition']!,
+              flashCard['meanings'][0]['definitions'][0]['meaning']!,
               style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    fontSize: containerWidth * 0.1, // 폭의 10%
-                    color: Colors.black, // 텍스트의 색상을 검정으로 변경
+                    fontSize: containerWidth * 0.1,
+                    color: Colors.black,
                   ),
             ),
             Text(
-              flashCard['example']!,
+              flashCard['meanings'][0]['definitions'][0]['example']!,
               style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    fontSize: containerWidth * 0.04, // 폭의 5%
-                    color: Colors.black, // 텍스트의 색상을 검정으로 변경
+                    fontSize: containerWidth * 0.04,
+                    color: Colors.black,
                   ),
             ),
             Text(
-              flashCard['exampleTranslation']!,
+              flashCard['meanings'][0]['definitions'][0]['translation']!,
               style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    fontSize: containerWidth * 0.05, // 폭의 5%
-                    color: Colors.black, // 텍스트의 색상을 검정으로 변경
+                    fontSize: containerWidth * 0.05,
+                    color: Colors.black,
                   ),
             ),
           ],

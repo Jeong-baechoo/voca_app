@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:voca_app/data/flash_card.dart';
 import 'package:voca_app/dic_page.dart';
 import 'package:voca_app/filp_card_page.dart';
-import 'package:voca_app/main.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:voca_app/main.dart';
 import 'package:voca_app/model/wordDescription.dart';
 
 class DetailScreen extends StatefulWidget {
-  final FlashCard flashCard;
-  const DetailScreen({Key? key, required this.flashCard}) : super(key: key);
+  final List<Map<String, dynamic>> flashcardsList;
+  const DetailScreen({Key? key, required this.flashcardsList})
+      : super(key: key);
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
@@ -16,7 +16,6 @@ class DetailScreen extends StatefulWidget {
 
 class _DetailScreenState extends State<DetailScreen> {
   bool isSecondButtonPressed = false;
-  static FlashCard flashCard = FlashCard();
 
   @override
   Widget build(BuildContext context) {
@@ -40,31 +39,30 @@ class _DetailScreenState extends State<DetailScreen> {
       children: [
         InkWell(
           onTap: () {
-            // '단어장 선택' 텍스트를 눌렀을 때의 동작을 여기에 추가
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Scaffold(
-                    appBar: AppBar(
-                      title: const Text('단어장 선택'),
-                      leading: IconButton(
-                        icon: const Icon(Icons.arrow_back),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
+              context,
+              MaterialPageRoute(
+                builder: (context) => Scaffold(
+                  appBar: AppBar(
+                    title: const Text('단어장 선택'),
+                    leading: IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                     ),
-                    body: ListViewPage(flashCard: flashCard),
                   ),
-                ));
+                  body: ListViewPage(flashcardsList: widget.flashcardsList),
+                ),
+              ),
+            );
           },
           child: const Text(
             '단어장 선택',
             style: TextStyle(
-              // 스타일은 필요에 따라 변경 가능
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
-              color: Colors.blue, // 원하는 색상
+              color: Colors.blue,
             ),
           ),
         ),
@@ -82,46 +80,50 @@ class _DetailScreenState extends State<DetailScreen> {
       curve: Curves.bounceIn,
       direction: SpeedDialDirection.up,
       children: [
-        // FAB 1
         SpeedDialChild(
-            child: const Icon(Icons.search),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Scaffold(
-                      appBar: AppBar(
-                        title: const Text('사전 검색'),
-                        leading: IconButton(
-                          icon: const Icon(Icons.arrow_back),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ),
-                      body: const DicPage(),
+          child: const Icon(Icons.search),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Scaffold(
+                  appBar: AppBar(
+                    title: const Text('사전 검색'),
+                    leading: IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                     ),
-                  ));
-            },
-            backgroundColor: Colors.lightBlue,
-            label: ' 사전에서 추가',
-            labelStyle: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontSize: 16.0),
-            labelBackgroundColor: Colors.lightBlue),
+                  ),
+                  body: const DicPage(),
+                ),
+              ),
+            );
+          },
+          backgroundColor: Colors.lightBlue,
+          label: ' 사전에서 추가',
+          labelStyle: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+            fontSize: 16.0,
+          ),
+          labelBackgroundColor: Colors.lightBlue,
+        ),
         SpeedDialChild(
-            child: const Icon(Icons.add),
-            backgroundColor: Colors.lightBlue,
-            onTap: () async {
-              _showInputDialog(context, yourWordDescription);
-            },
-            label: '직접 추가',
-            labelStyle: const TextStyle(
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-                fontSize: 16.0),
-            labelBackgroundColor: Colors.lightBlue),
+          child: const Icon(Icons.add),
+          backgroundColor: Colors.lightBlue,
+          onTap: () async {
+            _showInputDialog(context, yourWordDescription);
+          },
+          label: '직접 추가',
+          labelStyle: const TextStyle(
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+            fontSize: 16.0,
+          ),
+          labelBackgroundColor: Colors.lightBlue,
+        ),
       ],
     );
   }
@@ -257,100 +259,103 @@ class _DetailScreenState extends State<DetailScreen> {
   Widget _buildSavedWordsList() {
     WordDescription? yourWordDescription;
     return Scaffold(
-        body: ListView.builder(
-          itemCount: widget.flashCard.flashcards.length,
-          itemBuilder: (context, index) {
-            final currentFlashcard = widget.flashCard.flashcards[index];
+      body: ListView.builder(
+        itemCount: widget.flashcardsList.length,
+        itemBuilder: (context, index) {
+          final currentFlashcard = widget.flashcardsList[index];
 
-            return InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const FilpCardPage(),
+          return InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const FilpCardPage(),
+                ),
+              );
+            },
+            onLongPress: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (BuildContext context) {
+                  return Wrap(
+                    children: [
+                      ListTile(
+                        leading: const Icon(Icons.edit),
+                        title: const Text('수정'),
+                        onTap: () {
+                          Navigator.pop(context);
+                          _showInputDialog(context, yourWordDescription);
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.delete),
+                        title: const Text('삭제'),
+                        onTap: () {
+                          _showConfirmationDialog().then((value) {
+                            if (value) {
+                              setState(() {
+                                widget.flashcardsList.removeAt(index);
+                                // 리스트에서 해당 항목 삭제
+                              });
+                            }
+                            Navigator.pop(context); // 바텀 시트 닫기
+                          });
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            child: Column(
+              children: <Widget>[
+                ListTile(
+                  title: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              currentFlashcard['word'] as String,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall!
+                                  .copyWith(
+                                    color: Colors.black,
+                                  ),
+                            ),
+                            Text('[${currentFlashcard['phonetics']}]')
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              '품사: ${currentFlashcard['meanings'][0]['partOfSpeech'] as String}',
+                              style: const TextStyle(color: Colors.green),
+                            ),
+                            Text(
+                              currentFlashcard['meanings'][0]['definitions'][0]
+                                  ['meaning'] as String,
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                );
-              },
-              onLongPress: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Wrap(
-                      children: [
-                        ListTile(
-                          leading: const Icon(Icons.edit),
-                          title: const Text('수정'),
-                          onTap: () {
-                            Navigator.pop(context);
-                            _showInputDialog(context, yourWordDescription);
-                          },
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.delete),
-                          title: const Text('삭제'),
-                          onTap: () {
-                            _showConfirmationDialog().then((value) {
-                              if (value) {
-                                setState(() {
-                                  widget.flashCard.flashcards
-                                      .removeAt(index); // 리스트에서 해당 항목 삭제
-                                });
-                              }
-                              Navigator.pop(context); // 바텀 시트 닫기
-                            });
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-              child: Column(
-                children: <Widget>[
-                  ListTile(
-                    title: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                currentFlashcard['word']!,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall!
-                                    .copyWith(
-                                      color: Colors.black,
-                                    ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                '품사: ${currentFlashcard['partOfSpeech']!}',
-                                style: const TextStyle(color: Colors.green),
-                              ),
-                              Text(
-                                currentFlashcard['definition']!,
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Divider(color: Color.fromARGB(255, 170, 170, 170)),
-                ],
-              ),
-            );
-          },
-        ),
-        floatingActionButton: _getFAB());
+                ),
+                const Divider(color: Color.fromARGB(255, 170, 170, 170)),
+              ],
+            ),
+          );
+        },
+      ),
+      floatingActionButton: _getFAB(),
+    );
   }
 }

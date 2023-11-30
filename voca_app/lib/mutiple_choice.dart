@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:voca_app/data/flash_card.dart';
 
 class Quiz extends StatefulWidget {
-  const Quiz({super.key, required FlashCard flashCard});
+  const Quiz({super.key, required List<Map<String, dynamic>> flashcardsList});
 
   @override
   State<Quiz> createState() {
@@ -112,21 +112,19 @@ class QuestionsScreen extends StatefulWidget {
 class _QuestionsScreenState extends State<QuestionsScreen> {
   var currentQuestionIndex = 0;
   List<Map<String, String>> quizQuestions = [];
-  late final FlashCard flashCard;
 
   @override
   void initState() {
     super.initState();
-    flashCard = FlashCard();
-    quizQuestions = getQuizQuestions();
+    // quizQuestions = getQuizQuestions();
   }
 
-  List<Map<String, String>> getQuizQuestions() {
-    /*TODO*/
-    List<Map<String, String>> flashcardsCopy = List.from(flashCard.flashcards);
-    flashcardsCopy.shuffle();
-    return flashcardsCopy.take(10).toList();
-  }
+  // List<Map<String, String>> getQuizQuestions() {
+  //   /*TODO*/
+  //   List<Map<String, String>> flashcardsCopy = List.from(widget.flashcardsList);
+  //   flashcardsCopy.shuffle();
+  //   return flashcardsCopy.take(10).toList();
+  // }
 
   void answerQuestion(String seletedAnswer) {
     widget.onSelectAnswer(seletedAnswer);

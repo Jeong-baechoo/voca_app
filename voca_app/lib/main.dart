@@ -33,14 +33,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
-  static FlashCard flashCard = FlashCard();
 
   final List<Widget> _pages = [
     DetailScreen(
-      flashCard: flashCard,
+      flashcardsList: flashcardsList,
     ),
     RecomendPage(),
-    QuizChoice(flashCard: flashCard),
+    QuizChoice(flashcardsList: flashcardsList),
     const DicPage(),
   ];
 
@@ -126,8 +125,6 @@ class RecomendPage extends StatelessWidget {
 class CategoryGrid extends StatelessWidget {
   final String category;
   final List<String> items;
-  static FlashCard flashCard = FlashCard();
-
   const CategoryGrid({super.key, required this.category, required this.items});
 
   @override
@@ -163,7 +160,7 @@ class CategoryGrid extends StatelessWidget {
                             },
                           ),
                         ),
-                        body: DetailScreen(flashCard: flashCard),
+                        body: DetailScreen(flashcardsList: flashcardsList),
                       ),
                     ));
               },
@@ -195,8 +192,9 @@ class GridItem extends StatelessWidget {
 }
 
 class ListViewPage extends StatefulWidget {
-  const ListViewPage({Key? key, required this.flashCard}) : super(key: key);
-  final FlashCard flashCard;
+  const ListViewPage({Key? key, required this.flashcardsList})
+      : super(key: key);
+  final List<Map<String, dynamic>> flashcardsList;
 
   @override
   State<ListViewPage> createState() {

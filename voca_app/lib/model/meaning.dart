@@ -1,4 +1,5 @@
 import 'package:voca_app/model/definition.dart';
+import 'package:voca_app/model/wordDescription.dart';
 
 class Meaning {
   String partOfSpeech;
@@ -19,4 +20,13 @@ class Meaning {
         "partOfSpeech": partOfSpeech,
         "definitions": List<dynamic>.from(definitions.map((x) => x.toJson())),
       };
+}
+
+String getPartOfSpeech(WordDescription? wordDescription) {
+  var meanings = wordDescription?.meanings;
+
+  if (meanings != null && meanings.isNotEmpty) {
+    return meanings.map((meaning) => meaning.partOfSpeech).join(', ');
+  }
+  return '';
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:voca_app/model/definition.dart';
+import 'package:voca_app/model/meaning.dart';
 import 'package:voca_app/model/wordDescription.dart';
 
 class DicPage extends StatelessWidget {
@@ -35,11 +36,11 @@ Future<void> _showInputDialog(
   TextEditingController phoneticsController =
       TextEditingController(text: yourWordDescription?.phonetics);
   TextEditingController partOfSpeechController =
-      TextEditingController(text: _getPartOfSpeech(yourWordDescription));
+      TextEditingController(text: getPartOfSpeech(yourWordDescription));
   TextEditingController definitionController =
-      TextEditingController(text: _getCombinedDefinitions(yourWordDescription));
+      TextEditingController(text: getCombinedDefinitions(yourWordDescription));
   TextEditingController memoController =
-      TextEditingController(text: _getCombinedExamples(yourWordDescription));
+      TextEditingController(text: getCombinedExamples(yourWordDescription));
 
   return showDialog<void>(
     context: context,
@@ -99,42 +100,6 @@ Future<void> _showInputDialog(
       );
     },
   );
-}
-
-String _getPartOfSpeech(WordDescription? wordDescription) {
-  var meanings = wordDescription?.meanings;
-
-  if (meanings != null && meanings.isNotEmpty) {
-    return meanings.map((meaning) => meaning.partOfSpeech).join(', ');
-  }
-  return '';
-}
-
-String _getCombinedDefinitions(WordDescription? wordDescription) {
-  var meanings = wordDescription?.meanings;
-
-  if (meanings != null && meanings.isNotEmpty) {
-    List<Definition> allDefinitions =
-        meanings.expand((meaning) => meaning.definitions).toList();
-    return allDefinitions
-        .map((definition) =>
-            '${definition.meaning}: ${definition.example} - ${definition.translation}')
-        .join('\n');
-  }
-  return '';
-}
-
-String _getCombinedExamples(WordDescription? wordDescription) {
-  var meanings = wordDescription?.meanings;
-
-  if (meanings != null && meanings.isNotEmpty) {
-    List<String> allExamples = meanings
-        .expand((meaning) => meaning.definitions)
-        .map((definition) => definition.example)
-        .toList();
-    return allExamples.join('\n');
-  }
-  return '';
 }
 
 Widget _buildInputField(String label, TextEditingController controller,

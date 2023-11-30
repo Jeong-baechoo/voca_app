@@ -1,3 +1,5 @@
+import 'package:voca_app/model/wordDescription.dart';
+
 class Definition {
   String meaning;
   String example;
@@ -20,4 +22,31 @@ class Definition {
         "example": example,
         "translation": translation,
       };
+}
+
+String getCombinedDefinitions(WordDescription? wordDescription) {
+  var meanings = wordDescription?.meanings;
+
+  if (meanings != null && meanings.isNotEmpty) {
+    List<Definition> allDefinitions =
+        meanings.expand((meaning) => meaning.definitions).toList();
+    return allDefinitions
+        .map((definition) =>
+            '${definition.meaning}: ${definition.example} - ${definition.translation}')
+        .join('\n');
+  }
+  return '';
+}
+
+String getCombinedExamples(WordDescription? wordDescription) {
+  var meanings = wordDescription?.meanings;
+
+  if (meanings != null && meanings.isNotEmpty) {
+    List<String> allExamples = meanings
+        .expand((meaning) => meaning.definitions)
+        .map((definition) => definition.example)
+        .toList();
+    return allExamples.join('\n');
+  }
+  return '';
 }
