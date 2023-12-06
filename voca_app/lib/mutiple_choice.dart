@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:voca_app/data/flash_card.dart';
 
+List<String> usedWordsList = [];
+List<String> correctMeanings = [];
+late List<Map<String, dynamic>> quizQuestions;
+
 class Quiz extends StatefulWidget {
-  const Quiz({super.key, required List<Map<String, dynamic>> flashcardsList});
+  List<Map<String, dynamic>> flashcardsList;
+
+  Quiz({Key? key, required this.flashcardsList});
 
   @override
-  State<Quiz> createState() {
-    return _QuizState();
-  }
+  State<Quiz> createState() => _QuizState();
 }
 
 class _QuizState extends State<Quiz> {
-  var activeScreen = 'start-screen';
+  var activeScreen = 'questions-screen';
   List<String> selectedAnswer = [];
-  static const numTotalQuestions = 10;
+  static const numTotalQuestions = 4;
 
   void switchScreen() {
     setState(() {
@@ -38,6 +42,7 @@ class _QuizState extends State<Quiz> {
     if (activeScreen == 'questions-screen') {
       screenWidget = QuestionsScreen(
         onSelectAnswer: chooseAnswer,
+        questions: flashcardsList,
       );
     }
 
@@ -45,13 +50,23 @@ class _QuizState extends State<Quiz> {
       screenWidget = ResultScreen(
         chosenAnswers: selectedAnswer,
         restart: switchScreen,
-        questions: const [],
-        numTotalQuestions: 10,
+        numTotalQuestions: numTotalQuestions,
       );
     }
 
     return MaterialApp(
       home: Scaffold(
+        appBar: AppBar(
+          title: Text('4지선다'),
+          leading: activeScreen == 'start-screen'
+              ? null
+              : IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+        ),
         body: Container(
           child: screenWidget,
         ),
@@ -61,83 +76,118 @@ class _QuizState extends State<Quiz> {
 }
 
 class StartScreen extends StatelessWidget {
-  const StartScreen(this.startQuiz, {super.key});
+  const StartScreen(this.startQuiz, {Key? key}) : super(key: key);
 
   final void Function() startQuiz;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('4지선다'),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 50),
-              const Text(
-                '퀴즈 풀러가기!',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 24,
-                ),
+      appBar: AppBar(
+        title: const Text('4지선다'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 50),
+            const Text(
+              '퀴즈 풀러가기!',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 24,
               ),
-              const SizedBox(height: 50),
-              OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 94, 149, 235),
-                  foregroundColor: Colors.white,
-                ),
-                onPressed: startQuiz,
-                label: const Text('Start Test'),
-                icon: const Icon(Icons.arrow_right_alt),
-              )
-            ],
-          ),
-        ));
+            ),
+            const SizedBox(height: 50),
+            OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 94, 149, 235),
+                foregroundColor: Colors.white,
+              ),
+              onPressed: startQuiz,
+              label: const Text('Start Test'),
+              icon: const Icon(Icons.arrow_right_alt),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
 
 class QuestionsScreen extends StatefulWidget {
-  const QuestionsScreen({super.key, required this.onSelectAnswer});
+  const QuestionsScreen({
+    Key? key,
+    required this.onSelectAnswer,
+    required this.questions,
+  }) : super(key: key);
 
   final void Function(String answer) onSelectAnswer;
+  final List<Map<String, dynamic>> questions;
 
   @override
-  State<QuestionsScreen> createState() {
-    return _QuestionsScreenState();
-  }
+  State<QuestionsScreen> createState() => _QuestionsScreenState();
 }
 
 class _QuestionsScreenState extends State<QuestionsScreen> {
-  var currentQuestionIndex = 0;
-  List<Map<String, String>> quizQuestions = [];
+  late QuizQuestion currentQuestion;
+  Set<String> usedWords = Set<String>(); // Track used words
 
   @override
   void initState() {
     super.initState();
-    // quizQuestions = getQuizQuestions();
+    generateQuestion();
   }
 
-  // List<Map<String, String>> getQuizQuestions() {
-  //   /*TODO*/
-  //   List<Map<String, String>> flashcardsCopy = List.from(widget.flashcardsList);
-  //   flashcardsCopy.shuffle();
-  //   return flashcardsCopy.take(10).toList();
-  // }
+  void generateQuestion() {
+    final List<Map<String, dynamic>> shuffledList = List.from(widget.questions);
+    shuffledList.shuffle();
+    quizQuestions = shuffledList;
+    // Find a new word that hasn't been used
+    Map<String, dynamic>? correctAnswer;
+    for (final word in shuffledList) {
+      if (!usedWords.contains(word['word'])) {
+        correctAnswer = word;
+        break;
+      }
+    }
 
-  void answerQuestion(String seletedAnswer) {
-    widget.onSelectAnswer(seletedAnswer);
+    if (correctAnswer == null) {
+      // All words have been used, handle this case as you see fit
+      return;
+    }
+
+    final String correctWord = correctAnswer['word'] as String;
+    final String correctMeaning = (correctAnswer['meanings'] as List<dynamic>?)
+            ?.first['definitions'][0]['meaning']
+            .toString() ??
+        '';
+    correctMeanings.add(correctMeaning);
+    final List<String> incorrectWords = shuffledList
+        .where((word) => word != correctAnswer)
+        .take(3)
+        .map((word) => (word['meanings'] as List<dynamic>)
+            .first['definitions'][0]['meaning']
+            .toString())
+        .toList();
+
+    final List<String> allMeanings = [correctMeaning, ...incorrectWords];
+    allMeanings.shuffle();
+
     setState(() {
-      currentQuestionIndex++;
+      currentQuestion = QuizQuestion(correctWord, allMeanings);
     });
+  }
+
+  void answerQuestion(String selectedAnswer) {
+    widget.onSelectAnswer(selectedAnswer);
+    usedWords.add(currentQuestion.text); // Track used words for correct order
+    usedWordsList.add(currentQuestion.text);
+    generateQuestion();
   }
 
   @override
   Widget build(BuildContext context) {
-    final QuizQuestion currentQuestion =
-        quizQuestions[currentQuestionIndex] as QuizQuestion;
-
     return SizedBox(
       width: double.infinity,
       child: Container(
@@ -176,22 +226,22 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
 class QuizQuestion {
   const QuizQuestion(this.text, this.answers);
 
-  final String text;
-  final List<String> answers;
+  final String text; //문제
+  final List<String> answers; //보기들
 
   List<String> getShuffledAnswers() {
     final shuffledList = List.of(answers);
-    shuffledList.shuffle();
+    // shuffledList.shuffle();
     return shuffledList;
   }
 }
 
 class AnswerButton extends StatelessWidget {
   const AnswerButton({
-    super.key,
+    Key? key,
     required this.answerText,
     required this.onTap,
-  });
+  }) : super(key: key);
 
   final String answerText;
   final void Function() onTap;
@@ -225,39 +275,37 @@ class AnswerButton extends StatelessWidget {
 
 class ResultScreen extends StatelessWidget {
   const ResultScreen({
-    super.key,
+    Key? key,
     required this.chosenAnswers,
     required this.restart,
-    required this.questions,
     required this.numTotalQuestions,
-  });
+  }) : super(key: key);
 
   final List<String> chosenAnswers;
   final void Function() restart;
-  final List<QuizQuestion> questions;
   final int numTotalQuestions;
 
-  List<Map<String, Object>> getSummaryDate() {
+  List<Map<String, Object>> getSummaryData() {
     final List<Map<String, Object>> summary = [];
 
     for (var i = 0; i < chosenAnswers.length; i++) {
       summary.add({
         'question_index': i,
-        'question': questions[i].text,
-        'correct_answer': questions[i].answers[0],
-        'user_answer': chosenAnswers[i]
+        'question': usedWordsList[i],
+        'correct_answer': correctMeanings[i],
+        'user_answer': chosenAnswers[i],
       });
     }
-
     return summary;
   }
 
   @override
   Widget build(BuildContext context) {
-    final summaryData = getSummaryDate();
+    final summaryData = getSummaryData();
     final numCorrectQuestions = summaryData.where((data) {
       return data['correct_answer'] == data['user_answer'];
     }).length;
+
     return SizedBox(
       width: double.infinity,
       child: Container(
@@ -266,25 +314,28 @@ class ResultScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
+              'You answered $numCorrectQuestions out of $numTotalQuestions questions correctly!',
               textAlign: TextAlign.center,
               style: const TextStyle(
                 color: Color.fromARGB(255, 0, 0, 0),
                 fontSize: 20,
               ),
-              'You answered $numCorrectQuestions out of $numTotalQuestions questions correctly!',
             ),
             const SizedBox(
               height: 30,
             ),
-            QustionsSummary(summaryData),
+            QuestionsSummary(summaryData),
             const SizedBox(
               height: 30,
             ),
             TextButton.icon(
               style: TextButton.styleFrom(
-                  foregroundColor: const Color.fromARGB(255, 0, 0, 0)),
+                foregroundColor: const Color.fromARGB(255, 0, 0, 0),
+              ),
               onPressed: () {
                 chosenAnswers.clear();
+                usedWordsList.clear();
+                correctMeanings.clear();
                 restart();
               },
               icon: const Icon(Icons.refresh_outlined),
@@ -299,11 +350,12 @@ class ResultScreen extends StatelessWidget {
   }
 }
 
-class QustionsSummary extends StatelessWidget {
-  const QustionsSummary(
+class QuestionsSummary extends StatelessWidget {
+  const QuestionsSummary(
     this.summaryData, {
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
+
   final List<Map<String, Object>> summaryData;
 
   @override
@@ -321,7 +373,7 @@ class QustionsSummary extends StatelessWidget {
                   QuestionIdentifier(
                     isCorrectAnswer:
                         data['user_answer'] == data['correct_answer'],
-                    questionIndex: (data['question_index'] as int),
+                    questionIndex: data['question_index'] as int,
                   ),
                   const SizedBox(
                     width: 20,
@@ -330,14 +382,20 @@ class QustionsSummary extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(data['question'] as String,
-                            style: const TextStyle(
-                                color: Color.fromARGB(255, 0, 0, 0))),
+                        Text(
+                          data['question'] as String,
+                          style: const TextStyle(
+                              color: Color.fromARGB(255, 0, 0, 0)),
+                        ),
                         const SizedBox(height: 5),
-                        Text(data['user_answer'] as String,
-                            style: const TextStyle(color: Colors.pink)),
-                        Text(data['correct_answer'] as String,
-                            style: const TextStyle(color: Colors.indigo)),
+                        Text(
+                          data['user_answer'] as String,
+                          style: const TextStyle(color: Colors.pink),
+                        ),
+                        Text(
+                          data['correct_answer'] as String,
+                          style: const TextStyle(color: Colors.indigo),
+                        ),
                       ],
                     ),
                   )
@@ -353,13 +411,14 @@ class QustionsSummary extends StatelessWidget {
 
 class QuestionIdentifier extends StatelessWidget {
   const QuestionIdentifier({
-    super.key,
+    Key? key,
     required this.isCorrectAnswer,
     required this.questionIndex,
-  });
+  }) : super(key: key);
 
   final bool isCorrectAnswer;
   final int questionIndex;
+
   @override
   Widget build(BuildContext context) {
     final questionNumber = questionIndex + 1;

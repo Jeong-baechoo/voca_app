@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:voca_app/ListViewPage.dart';
 import 'package:voca_app/dic_page.dart';
 import 'package:voca_app/filp_card_page.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:voca_app/main.dart';
 import 'package:voca_app/model/wordDescription.dart';
+import 'package:voca_app/provider/selectVocaSet_provider.dart';
 
 class DetailScreen extends StatefulWidget {
   final List<Map<String, dynamic>> flashcardsList;
@@ -40,29 +43,17 @@ class _DetailScreenState extends State<DetailScreen> {
         InkWell(
           onTap: () {
             Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Scaffold(
-                  appBar: AppBar(
-                    title: const Text('단어장 선택'),
-                    leading: IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ),
-                  body: ListViewPage(flashcardsList: widget.flashcardsList),
-                ),
-              ),
-            );
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        ListViewPage(flashcardsList: widget.flashcardsList)));
           },
-          child: const Text(
-            '단어장 선택',
-            style: TextStyle(
+          child: Text(
+            '>${vocalbularySet[Provider.of<VocaSetProvider>(context).selectedVocaSet]}',
+            style: const TextStyle(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
-              color: Colors.blue,
+              color: Colors.amber,
             ),
           ),
         ),
@@ -269,7 +260,7 @@ class _DetailScreenState extends State<DetailScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const FilpCardPage(),
+                  builder: (context) => FilpCardPage(selectedIndex: index),
                 ),
               );
             },

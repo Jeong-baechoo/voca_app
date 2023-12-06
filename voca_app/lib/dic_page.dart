@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:voca_app/data/flash_card.dart';
 import 'package:voca_app/model/definition.dart';
 import 'package:voca_app/model/meaning.dart';
 import 'package:voca_app/model/wordDescription.dart';
+
+String apiResponseContent = '';
 
 class DicPage extends StatelessWidget {
   const DicPage({super.key});
@@ -80,14 +83,16 @@ Future<void> _showInputDialog(
           ),
           TextButton(
             onPressed: () {
-              // Access the values using the controllers
-              final String word = wordController.text;
-              final String partOfSpeech = partOfSpeechController.text;
-              final String definition = definitionController.text;
-              final String memo = memoController.text;
+              // // Access the values using the controllers
+              // final String word = wordController.text;
+              // final String partOfSpeech = partOfSpeechController.text;
+              // final String definition = definitionController.text;
+              // final String memo = memoController.text;
 
-              // Do something with the values (e.g., save to database)
-              // ...
+              // // Do something with the values (e.g., save to database)
+              // // ...
+              Map<String, dynamic> contentMap = json.decode(apiResponseContent);
+              flashcardsList.add(contentMap);
 
               Navigator.of(context).pop(); // 다이얼로그 닫기
             },
@@ -140,7 +145,6 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   TextEditingController userInputController = TextEditingController();
-  String apiResponseContent = '';
   WordDescription? wordDescription;
 
   Future<void> sendChatRequest() async {
@@ -178,28 +182,17 @@ class _ChatScreenState extends State<ChatScreen> {
 
     if (response.statusCode == 200) {
       // HTTP 요청이 성공하면 여기에서 응답을 처리할 수 있습니다.
-      print('Response: ${response.body}');
+      // print('Response: ${response.body}');
 
       // 응답에서 content를 추출하여 JSON 디코딩
       Map<String, dynamic> responseBody =
           jsonDecode(utf8.decode(response.bodyBytes));
+
       String content = responseBody['choices'][0]['message']['content'];
       WordDescription wordDescriptionFromJson(String str) =>
           WordDescription.fromJson(json.decode(str));
       final newWordDescription = wordDescriptionFromJson(content);
 
-      // print('Content: $content');
-      // print(newWordDescription.word);
-      // print(newWordDescription.phonetics);
-      // newWordDescription.meanings.forEach((meaning) {
-      //   print("Part of Speech: ${meaning.partOfSpeech}");
-      //   meaning.definitions.forEach((definition) {
-      //     print("  - Meaning: ${definition.meaning}");
-      //     print("    Example: ${definition.example}");
-      //     print("    Translation: ${definition.translation}");
-      //   });
-      //   print("");
-      // });
       setState(() {
         wordDescription = newWordDescription;
         apiResponseContent = content;

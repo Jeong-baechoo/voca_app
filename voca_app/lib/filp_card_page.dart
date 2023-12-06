@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:voca_app/data/flash_card.dart';
 
 class FilpCardPage extends StatelessWidget {
-  const FilpCardPage({super.key});
-
+  const FilpCardPage({super.key, this.selectedIndex});
+  final selectedIndex;
   Widget _renderBackground() {
     return Container(
       decoration:
@@ -40,6 +40,7 @@ class FilpCardPage extends StatelessWidget {
               Expanded(
                 flex: 4,
                 child: PageView(
+                  controller: PageController(initialPage: selectedIndex),
                   children: List.generate(
                     flashcardsList.length,
                     (index) => _renderFlipCardContainer(
@@ -89,6 +90,7 @@ class FlipCardContainer extends StatelessWidget {
                     color: Colors.black,
                   ),
             ),
+            Text('[${flashCard['phonetics']}]')
           ],
         ),
       ),

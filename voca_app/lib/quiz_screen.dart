@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voca_app/mutiple_choice.dart';
 
 class QuizChoice extends StatelessWidget {
   const QuizChoice({Key? key, required this.flashcardsList}) : super(key: key);
@@ -101,46 +102,6 @@ class QuizChoice extends StatelessWidget {
   }
 }
 
-class Quiz extends StatelessWidget {
-  const Quiz({Key? key, required this.flashcardsList}) : super(key: key);
-
-  final List<Map<String, dynamic>> flashcardsList;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Quiz'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Quiz Screen',
-              style: TextStyle(fontSize: 30),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Handle quiz logic
-              },
-              style: ElevatedButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 40),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-              ),
-              child: const Text('Start Quiz', style: TextStyle(fontSize: 17)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class SpellingQuizScreen extends StatefulWidget {
   const SpellingQuizScreen({Key? key, required this.flashcards})
       : super(key: key);
@@ -210,7 +171,7 @@ class _SpellingQuizScreenState extends State<SpellingQuizScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('퀴즈 완료'),
-          content: Text('점수: $score / 10'),
+          content: Text('점수: $score / 4'),
           actions: <Widget>[
             TextButton(
               onPressed: () {

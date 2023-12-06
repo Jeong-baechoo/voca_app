@@ -30,10 +30,7 @@ String getCombinedDefinitions(WordDescription? wordDescription) {
   if (meanings != null && meanings.isNotEmpty) {
     List<Definition> allDefinitions =
         meanings.expand((meaning) => meaning.definitions).toList();
-    return allDefinitions
-        .map((definition) =>
-            '${definition.meaning}: ${definition.example} - ${definition.translation}')
-        .join('\n');
+    return allDefinitions.map((definition) => definition.meaning).join('\n');
   }
   return '';
 }
@@ -44,7 +41,8 @@ String getCombinedExamples(WordDescription? wordDescription) {
   if (meanings != null && meanings.isNotEmpty) {
     List<String> allExamples = meanings
         .expand((meaning) => meaning.definitions)
-        .map((definition) => definition.example)
+        .map(
+            (definition) => '${definition.example} - ${definition.translation}')
         .toList();
     return allExamples.join('\n');
   }
