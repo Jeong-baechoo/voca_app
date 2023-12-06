@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:voca_app/ListViewPage.dart';
+import 'package:voca_app/list_view_page.dart';
+import 'package:voca_app/data/flash_card.dart';
 import 'package:voca_app/dic_page.dart';
 import 'package:voca_app/filp_card_page.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:voca_app/main.dart';
 import 'package:voca_app/model/wordDescription.dart';
-import 'package:voca_app/provider/selectVocaSet_provider.dart';
+import 'package:voca_app/provider/select_voca_set_provider.dart';
 
 class DetailScreen extends StatefulWidget {
-  final List<Map<String, dynamic>> flashcardsList;
-  const DetailScreen({Key? key, required this.flashcardsList})
-      : super(key: key);
+  const DetailScreen({Key? key}) : super(key: key);
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
@@ -46,7 +45,7 @@ class _DetailScreenState extends State<DetailScreen> {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        ListViewPage(flashcardsList: widget.flashcardsList)));
+                        ListViewPage(flashcardsList: flashcardsList)));
           },
           child: Text(
             '>${vocalbularySet[Provider.of<VocaSetProvider>(context).selectedVocaSet]}',
@@ -251,9 +250,9 @@ class _DetailScreenState extends State<DetailScreen> {
     WordDescription? yourWordDescription;
     return Scaffold(
       body: ListView.builder(
-        itemCount: widget.flashcardsList.length,
+        itemCount: flashcardsList.length,
         itemBuilder: (context, index) {
-          final currentFlashcard = widget.flashcardsList[index];
+          final currentFlashcard = flashcardsList[index];
 
           return InkWell(
             onTap: () {
@@ -285,7 +284,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           _showConfirmationDialog().then((value) {
                             if (value) {
                               setState(() {
-                                widget.flashcardsList.removeAt(index);
+                                flashcardsList.removeAt(index);
                                 // 리스트에서 해당 항목 삭제
                               });
                             }

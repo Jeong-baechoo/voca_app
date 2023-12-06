@@ -6,9 +6,7 @@ List<String> correctMeanings = [];
 late List<Map<String, dynamic>> quizQuestions;
 
 class Quiz extends StatefulWidget {
-  List<Map<String, dynamic>> flashcardsList;
-
-  Quiz({Key? key, required this.flashcardsList});
+  const Quiz({super.key});
 
   @override
   State<Quiz> createState() => _QuizState();
@@ -57,11 +55,11 @@ class _QuizState extends State<Quiz> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('4지선다'),
+          title: const Text('4지선다'),
           leading: activeScreen == 'start-screen'
               ? null
               : IconButton(
-                  icon: Icon(Icons.arrow_back),
+                  icon: const Icon(Icons.arrow_back),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },

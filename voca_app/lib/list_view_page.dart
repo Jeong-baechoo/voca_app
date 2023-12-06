@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voca_app/main.dart';
-import 'package:voca_app/provider/selectVocaSet_provider.dart';
+import 'package:voca_app/provider/select_voca_set_provider.dart';
 
 class ListViewPage extends StatefulWidget {
   const ListViewPage({Key? key, required this.flashcardsList})

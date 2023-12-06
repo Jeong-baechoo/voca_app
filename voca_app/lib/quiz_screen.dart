@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:voca_app/data/flash_card.dart';
 import 'package:voca_app/mutiple_choice.dart';
 
 class QuizChoice extends StatelessWidget {
-  const QuizChoice({Key? key, required this.flashcardsList}) : super(key: key);
-
-  final List<Map<String, dynamic>> flashcardsList;
+  const QuizChoice({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +24,7 @@ class QuizChoice extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Quiz(
-                          flashcardsList: flashcardsList,
-                        ),
+                        builder: (context) => const Quiz(),
                       ),
                     );
                   },
