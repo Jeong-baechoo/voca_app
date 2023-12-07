@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:voca_app/chat_screen.dart';
 import 'package:voca_app/data/flash_card.dart';
 import 'package:voca_app/model/definition.dart';
 import 'package:voca_app/model/meaning.dart';
 import 'package:voca_app/model/wordDescription.dart';
+import 'package:voca_app/view/chat_screen.dart';
 
 String apiResponseContent = '';
 

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voca_app/main.dart';
-import 'package:voca_app/provider/select_voca_set_provider.dart';
+import 'package:voca_app/provider/voca_provider.dart';
 
 class ListViewPage extends StatefulWidget {
-  const ListViewPage({Key? key, required this.flashcardsList})
-      : super(key: key);
-  final List<Map<String, dynamic>> flashcardsList;
+  const ListViewPage({super.key});
 
   @override
   State<ListViewPage> createState() {
@@ -93,8 +91,7 @@ class _ListViewPageState extends State<ListViewPage> {
   Widget buildListItem(int index) {
     return InkWell(
       onTap: () {
-        Provider.of<VocaSetProvider>(context, listen: false)
-            .selectVocaSet(index);
+        Provider.of<VocaProvider>(context, listen: false).selectVocaSet(index);
         Navigator.pop(context);
       },
       onLongPress: () {

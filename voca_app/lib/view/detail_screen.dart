@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:voca_app/list_view_page.dart';
 import 'package:voca_app/data/flash_card.dart';
-import 'package:voca_app/dic_page.dart';
 import 'package:voca_app/filp_card_page.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:voca_app/main.dart';
 import 'package:voca_app/model/wordDescription.dart';
-import 'package:voca_app/provider/select_voca_set_provider.dart';
+import 'package:voca_app/provider/voca_provider.dart';
+import 'package:voca_app/view/dic_page.dart';
+import 'package:voca_app/main.dart';
+import 'package:voca_app/view/list_view_page.dart';
 
 class DetailScreen extends StatefulWidget {
   const DetailScreen({Key? key}) : super(key: key);
@@ -41,14 +41,11 @@ class _DetailScreenState extends State<DetailScreen> {
       children: [
         InkWell(
           onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        ListViewPage(flashcardsList: flashcardsList)));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const ListViewPage()));
           },
           child: Text(
-            '>${vocalbularySet[Provider.of<VocaSetProvider>(context).selectedVocaSet]}',
+            '>${vocalbularySet[Provider.of<VocaProvider>(context).selectedVocaSet]}',
             style: const TextStyle(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
@@ -128,7 +125,8 @@ class _DetailScreenState extends State<DetailScreen> {
         TextEditingController(text: yourWordDescription?.phonetics);
     TextEditingController partOfSpeechController = TextEditingController();
     TextEditingController definitionController = TextEditingController();
-    TextEditingController memoController = TextEditingController();
+    TextEditingController exampleController = TextEditingController();
+    TextEditingController translationController = TextEditingController();
 
     return showDialog<void>(
       context: context,
@@ -151,7 +149,8 @@ class _DetailScreenState extends State<DetailScreen> {
                   _buildInputField('발음기호', phoneticsController),
                   _buildInputField('품사', partOfSpeechController),
                   _buildInputField('뜻', definitionController),
-                  _buildInputField('기타 메모', memoController),
+                  _buildInputField('예문', exampleController),
+                  _buildInputField('해석 ', translationController),
                 ],
               ),
             ),
@@ -168,14 +167,20 @@ class _DetailScreenState extends State<DetailScreen> {
             ),
             TextButton(
               onPressed: () {
-                // Access the values using the controllers
-                final String word = wordController.text;
-                final String partOfSpeech = partOfSpeechController.text;
-                final String definition = definitionController.text;
-                final String memo = memoController.text;
+                WordDescription newWordDescription =
+                    WordDescription.createWordDescription(
+                  word: wordController.text,
+                  phonetics: phoneticsController.text,
+                  partOfSpeech: partOfSpeechController.text,
+                  definition: definitionController.text,
+                  translate: translationController.text,
+                  example: exampleController.text,
+                );
 
-                // Do something with the values (e.g., save to database)
-                // ...
+                setState(() {
+                  Provider.of<VocaProvider>(context, listen: false)
+                      .addWord(newWordDescription);
+                });
 
                 Navigator.of(context).pop(); // 다이얼로그 닫기
               },
@@ -250,9 +255,13 @@ class _DetailScreenState extends State<DetailScreen> {
     WordDescription? yourWordDescription;
     return Scaffold(
       body: ListView.builder(
-        itemCount: flashcardsList.length,
+        itemCount: myVocaSet[Provider.of<VocaProvider>(context, listen: false)
+                .selectedVocaSet]
+            .length,
         itemBuilder: (context, index) {
-          final currentFlashcard = flashcardsList[index];
+          final currentFlashcard = myVocaSet[
+              Provider.of<VocaProvider>(context, listen: false)
+                  .selectedVocaSet][index];
 
           return InkWell(
             onTap: () {
@@ -284,9 +293,12 @@ class _DetailScreenState extends State<DetailScreen> {
                           _showConfirmationDialog().then((value) {
                             if (value) {
                               setState(() {
-                                flashcardsList.removeAt(index);
-                                // 리스트에서 해당 항목 삭제
+                                myVocaSet[Provider.of<VocaProvider>(context,
+                                            listen: false)
+                                        .selectedVocaSet]
+                                    .removeAt(index);
                               });
+                              // 리스트에서 해당 항목 삭제
                             }
                             Navigator.pop(context); // 바텀 시트 닫기
                           });

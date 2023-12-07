@@ -1,3 +1,4 @@
+List<dynamic> myVocaSet = [flashcardsList, flashcardsList2];
 List<Map<String, dynamic>> flashcardsList = [
   {
     "word": "plant",
