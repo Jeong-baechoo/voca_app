@@ -13,6 +13,34 @@ class ListViewPage extends StatefulWidget {
 }
 
 class _ListViewPageState extends State<ListViewPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('단어장 선택'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: ListView.builder(
+        itemExtent: 100.0,
+        itemCount: vocalbularySet.length,
+        itemBuilder: (context, index) {
+          return buildListItem(index);
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _showNewDialog();
+        },
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+
   Future<bool> _showConfirmationDialog() async {
     return await showDialog<bool>(
           context: context,
@@ -73,7 +101,7 @@ class _ListViewPageState extends State<ListViewPage> {
                   ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        vocalbularySet[index] = 'Item : ${_controller.text}';
+                        vocalbularySet[index] = _controller.text;
                       });
                       Navigator.pop(context); // 바텀 시트 닫기
                     },
@@ -179,34 +207,6 @@ class _ListViewPageState extends State<ListViewPage> {
           ],
         );
       },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('단어장 선택'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: ListView.builder(
-        itemExtent: 100.0,
-        itemCount: vocalbularySet.length,
-        itemBuilder: (context, index) {
-          return buildListItem(index);
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showNewDialog();
-        },
-        child: const Icon(Icons.add),
-      ),
     );
   }
 }

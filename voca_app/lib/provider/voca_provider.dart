@@ -19,7 +19,6 @@ class VocaProvider with ChangeNotifier {
   }
 
   void deleteWord(int index) {
-    // Remove the word from the selected vocabulary set
     myVocaSet[_selectedVocaSet].removeAt(index);
     notifyListeners();
   }

@@ -26,14 +26,16 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int currentPage = Provider.of<PageProvider>(context).selectedPage;
+
     return Scaffold(
       appBar: AppBar(title: Text(_titles[currentPage])),
       body: _pages[currentPage],
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: Provider.of<PageProvider>(context).selectedPage,
+        currentIndex: currentPage,
         onTap: (index) {
           Provider.of<PageProvider>(context, listen: false).selectPage(index);
         },
+        type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
         selectedItemColor: const Color.fromARGB(255, 94, 149, 235),
         unselectedItemColor: Colors.grey,
