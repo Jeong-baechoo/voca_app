@@ -1,18 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:voca_app/main.dart';
-import 'package:voca_app/provider/voca_provider.dart';
+import 'package:voca_app/providers/voca_provider.dart';
 
-class ListViewPage extends StatefulWidget {
+class ListViewPage extends StatelessWidget {
   const ListViewPage({super.key});
 
-  @override
-  State<ListViewPage> createState() {
-    return _ListViewPageState();
-  }
-}
-
-class _ListViewPageState extends State<ListViewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,21 +19,21 @@ class _ListViewPageState extends State<ListViewPage> {
       ),
       body: ListView.builder(
         itemExtent: 100.0,
-        itemCount: vocalbularySet.length,
+        itemCount: Provider.of<VocaProvider>(context).vocabularySets.length,
         itemBuilder: (context, index) {
-          return buildListItem(index);
+          return buildListItem(context, index);
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showNewDialog();
+          _showNewDialog(context);
         },
         child: const Icon(Icons.add),
       ),
     );
   }
 
-  Future<bool> _showConfirmationDialog() async {
+  Future<bool> _showConfirmationDialog(BuildContext context) async {
     return await showDialog<bool>(
           context: context,
           builder: (context) {
@@ -68,8 +60,8 @@ class _ListViewPageState extends State<ListViewPage> {
         false; // 다이얼로그가 닫힐 경우 false 반환
   }
 
-  Future<void> _showEditDialog(int index) async {
-    TextEditingController _controller = TextEditingController();
+  Future<void> _showEditDialog(BuildContext context, int index) async {
+    TextEditingController controller = TextEditingController();
 
     return await showModalBottomSheet(
       context: context,
@@ -81,7 +73,7 @@ class _ListViewPageState extends State<ListViewPage> {
             children: [
               // 입력창
               TextField(
-                controller: _controller,
+                controller: controller,
                 decoration: const InputDecoration(
                   hintText: '수정할 단어장 이름',
                 ),
@@ -100,9 +92,9 @@ class _ListViewPageState extends State<ListViewPage> {
                   // 확인 버튼
                   ElevatedButton(
                     onPressed: () {
-                      setState(() {
-                        vocalbularySet[index] = _controller.text;
-                      });
+                      Provider.of<VocaProvider>(context, listen: false)
+                          .updateVocabularySet(index, controller.text);
+
                       Navigator.pop(context); // 바텀 시트 닫기
                     },
                     child: const Text('확인'),
@@ -116,7 +108,7 @@ class _ListViewPageState extends State<ListViewPage> {
     );
   }
 
-  Widget buildListItem(int index) {
+  Widget buildListItem(BuildContext context, int index) {
     return InkWell(
       onTap: () {
         Provider.of<VocaProvider>(context, listen: false).selectVocaSet(index);
@@ -133,18 +125,17 @@ class _ListViewPageState extends State<ListViewPage> {
                   title: const Text('수정'),
                   onTap: () {
                     Navigator.pop(context);
-                    _showEditDialog(index);
+                    _showEditDialog(context, index);
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.delete),
                   title: const Text('삭제'),
                   onTap: () {
-                    _showConfirmationDialog().then((value) {
+                    _showConfirmationDialog(context).then((value) {
                       if (value) {
-                        setState(() {
-                          vocalbularySet.removeAt(index); // 리스트에서 해당 항목 삭제
-                        });
+                        Provider.of<VocaProvider>(context, listen: false)
+                            .deleteVocabularySet(index); // 리스트에서 해당 항목 삭제
                       }
                       Navigator.pop(context); // 바텀 시트 닫기
                     });
@@ -161,7 +152,8 @@ class _ListViewPageState extends State<ListViewPage> {
           child: Row(
             children: <Widget>[
               Center(
-                child: Text(vocalbularySet[index]),
+                child: Text(
+                    Provider.of<VocaProvider>(context).vocabularySets[index]),
               ),
             ],
           ),
@@ -170,7 +162,7 @@ class _ListViewPageState extends State<ListViewPage> {
     );
   }
 
-  Future<void> _showNewDialog() async {
+  Future<void> _showNewDialog(BuildContext context) async {
     String newItem = ''; // 사용자가 입력한 새로운 아이템 이름
 
     return await showDialog<void>(
@@ -196,9 +188,8 @@ class _ListViewPageState extends State<ListViewPage> {
             TextButton(
               onPressed: () {
                 if (newItem.isNotEmpty) {
-                  setState(() {
-                    vocalbularySet.add(newItem); // 리스트에 새로운 아이템 추가
-                  });
+                  Provider.of<VocaProvider>(context, listen: false)
+                      .addVocabularySet(newItem);
                 }
                 Navigator.of(context).pop(); // 다이얼로그 닫기
               },

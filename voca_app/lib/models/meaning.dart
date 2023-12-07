@@ -1,5 +1,4 @@
-import 'package:voca_app/model/definition.dart';
-import 'package:voca_app/model/wordDescription.dart';
+import 'package:voca_app/models/definition.dart';
 
 class Meaning {
   String partOfSpeech;
@@ -22,11 +21,11 @@ class Meaning {
       };
 }
 
-String getPartOfSpeech(WordDescription? wordDescription) {
-  var meanings = wordDescription?.meanings;
+// String getPartOfSpeech(WordDescription? wordDescription) {
+//   var meanings = wordDescription?.meanings;
 
-  if (meanings != null && meanings.isNotEmpty) {
-    return meanings.map((meaning) => meaning.partOfSpeech).join(', ');
-  }
-  return '';
-}
+//   if (meanings != null && meanings.isNotEmpty) {
+//     return meanings.map((meaning) => meaning.partOfSpeech).join(', ');
+//   }
+//   return '';
+// }

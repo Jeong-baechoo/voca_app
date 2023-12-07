@@ -1,5 +1,5 @@
-import 'package:voca_app/model/definition.dart';
-import 'package:voca_app/model/meaning.dart';
+import 'package:voca_app/models/definition.dart';
+import 'package:voca_app/models/meaning.dart';
 
 class WordDescription {
   String word;

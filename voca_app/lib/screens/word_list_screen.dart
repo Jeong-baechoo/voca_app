@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:voca_app/data/flash_card.dart';
-import 'package:voca_app/filp_card_page.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:voca_app/model/wordDescription.dart';
-import 'package:voca_app/provider/voca_provider.dart';
-import 'package:voca_app/view/dic_page.dart';
-import 'package:voca_app/main.dart';
-import 'package:voca_app/view/list_view_page.dart';
+import 'package:voca_app/models/word_description.dart';
+import 'package:voca_app/providers/voca_provider.dart';
+import 'package:voca_app/providers/word_provider.dart';
+import 'package:voca_app/screens/dic_page.dart';
+import 'package:voca_app/screens/filp_card_page.dart';
+import 'package:voca_app/screens/list_view_page.dart';
 
-class DetailScreen extends StatefulWidget {
-  const DetailScreen({Key? key}) : super(key: key);
+//현재 선택된 단어장의 단어들을 나열
+class DetailScreen extends StatelessWidget {
+  const DetailScreen({super.key});
 
-  @override
-  State<DetailScreen> createState() => _DetailScreenState();
-}
-
-class _DetailScreenState extends State<DetailScreen> {
-  bool isSecondButtonPressed = false;
+  final isSecondButtonPressed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +23,7 @@ class _DetailScreenState extends State<DetailScreen> {
           _buildMenuSection(context),
           const Divider(color: Colors.black),
           Expanded(
-            child: _buildSavedWordsList(),
+            child: _buildSavedWordsList(context),
           ),
         ],
       ),
@@ -36,6 +31,8 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   Widget _buildMenuSection(BuildContext context) {
+    final vocalbularySet = Provider.of<VocaProvider>(context).vocabularySets;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -57,7 +54,7 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
-  Widget _getFAB() {
+  Widget _getFAB(context) {
     WordDescription? yourWordDescription;
     return SpeedDial(
       icon: Icons.add,
@@ -128,6 +125,9 @@ class _DetailScreenState extends State<DetailScreen> {
     TextEditingController exampleController = TextEditingController();
     TextEditingController translationController = TextEditingController();
 
+    final currentVocaIndex =
+        Provider.of<VocaProvider>(context, listen: false).selectedVocaSet;
+
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -177,10 +177,8 @@ class _DetailScreenState extends State<DetailScreen> {
                   example: exampleController.text,
                 );
 
-                setState(() {
-                  Provider.of<VocaProvider>(context, listen: false)
-                      .addWord(newWordDescription);
-                });
+                Provider.of<WordProvider>(context, listen: false)
+                    .addWord(currentVocaIndex, newWordDescription);
 
                 Navigator.of(context).pop(); // 다이얼로그 닫기
               },
@@ -224,7 +222,7 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
-  Future<bool> _showConfirmationDialog() async {
+  Future<bool> _showConfirmationDialog(context) async {
     return await showDialog<bool>(
           context: context,
           builder: (context) {
@@ -251,17 +249,15 @@ class _DetailScreenState extends State<DetailScreen> {
         false; // 다이얼로그가 닫힐 경우 false 반환
   }
 
-  Widget _buildSavedWordsList() {
+  Widget _buildSavedWordsList(context) {
     WordDescription? yourWordDescription;
+    final currentVocaIndex = Provider.of<VocaProvider>(context).selectedVocaSet;
+    final currentVocaSet = Provider.of<WordProvider>(context).myVocaSet;
     return Scaffold(
       body: ListView.builder(
-        itemCount: myVocaSet[Provider.of<VocaProvider>(context, listen: false)
-                .selectedVocaSet]
-            .length,
+        itemCount: currentVocaSet[currentVocaIndex].length,
         itemBuilder: (context, index) {
-          final currentFlashcard = myVocaSet[
-              Provider.of<VocaProvider>(context, listen: false)
-                  .selectedVocaSet][index];
+          final currentFlashcard = currentVocaSet[currentVocaIndex][index];
 
           return InkWell(
             onTap: () {
@@ -290,14 +286,10 @@ class _DetailScreenState extends State<DetailScreen> {
                         leading: const Icon(Icons.delete),
                         title: const Text('삭제'),
                         onTap: () {
-                          _showConfirmationDialog().then((value) {
+                          _showConfirmationDialog(context).then((value) {
                             if (value) {
-                              setState(() {
-                                myVocaSet[Provider.of<VocaProvider>(context,
-                                            listen: false)
-                                        .selectedVocaSet]
-                                    .removeAt(index);
-                              });
+                              Provider.of<WordProvider>(context, listen: false)
+                                  .deleteWord(currentVocaIndex, index);
                               // 리스트에서 해당 항목 삭제
                             }
                             Navigator.pop(context); // 바텀 시트 닫기
@@ -357,7 +349,7 @@ class _DetailScreenState extends State<DetailScreen> {
           );
         },
       ),
-      floatingActionButton: _getFAB(),
+      floatingActionButton: _getFAB(context),
     );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:voca_app/data/flash_card.dart';
-import 'package:voca_app/view/questions_screen.dart';
-import 'package:voca_app/view/start_screen.dart';
+import 'package:voca_app/providers/word_provider.dart';
+import 'package:voca_app/screens/questions_screen.dart';
 
 List<String> usedWordsList = [];
 List<String> correctMeanings = [];
@@ -18,6 +17,12 @@ class _QuizState extends State<Quiz> {
   var activeScreen = 'questions-screen';
   List<String> selectedAnswer = [];
   static const numTotalQuestions = 4;
+
+  @override
+  void initState() {
+    switchScreen();
+    super.initState();
+  }
 
   void switchScreen() {
     setState(() {
@@ -37,16 +42,14 @@ class _QuizState extends State<Quiz> {
 
   @override
   Widget build(BuildContext context) {
-    Widget screenWidget = StartScreen(switchScreen);
+    Widget screenWidget;
 
     if (activeScreen == 'questions-screen') {
       screenWidget = QuestionsScreen(
         onSelectAnswer: chooseAnswer,
         questions: flashcardsList,
       );
-    }
-
-    if (activeScreen == 'result-screen') {
+    } else {
       screenWidget = ResultScreen(
         chosenAnswers: selectedAnswer,
         restart: switchScreen,

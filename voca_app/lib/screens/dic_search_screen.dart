@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:voca_app/model/definition.dart';
-import 'package:voca_app/model/wordDescription.dart';
+import 'package:voca_app/models/definition.dart';
+import 'package:voca_app/models/word_description.dart';
 import 'package:http/http.dart' as http;
-import 'package:voca_app/view/dic_page.dart';
+import 'package:voca_app/widgets/input_dialog.dart';
 
+//사전의 검색 결과가 나타남
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key, required this.onWordDescriptionChanged});
   final Function(WordDescription) onWordDescriptionChanged;

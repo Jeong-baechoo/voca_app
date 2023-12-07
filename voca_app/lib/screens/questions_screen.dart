@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voca_app/view/mutiple_choice.dart';
+import 'package:voca_app/screens/mutiple_choice.dart';
 
 class QuestionsScreen extends StatefulWidget {
   const QuestionsScreen({
@@ -29,7 +29,6 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     final List<Map<String, dynamic>> shuffledList = List.from(widget.questions);
     shuffledList.shuffle();
     quizQuestions = shuffledList;
-    // Find a new word that hasn't been used
     Map<String, dynamic>? correctAnswer;
     for (final word in shuffledList) {
       if (!usedWords.contains(word['word'])) {

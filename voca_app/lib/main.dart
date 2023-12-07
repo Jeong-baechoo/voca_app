@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:voca_app/provider/page_provider.dart';
+import 'package:voca_app/providers/page_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:voca_app/provider/voca_provider.dart';
-import 'package:voca_app/view/my_home_page.dart';
-
-List<String> vocalbularySet = ['내 단어장', 'Item : 1', 'Item : 2', 'Item : 3'];
+import 'package:voca_app/providers/voca_provider.dart';
+import 'package:voca_app/providers/word_provider.dart';
+import 'package:voca_app/screens/my_home_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => VocaProvider()),
+    ChangeNotifierProvider(create: (context) => WordProvider()),
     ChangeNotifierProvider(create: (context) => PageProvider()),
   ], child: const MyApp()));
 }

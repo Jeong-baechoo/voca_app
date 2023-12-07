@@ -1,29 +1,7 @@
-import 'package:voca_app/model/wordDescription.dart';
+import 'package:voca_app/models/definition.dart';
+import 'package:voca_app/models/word_description.dart';
 
-class Definition {
-  String meaning;
-  String example;
-  String translation;
-
-  Definition({
-    required this.meaning,
-    required this.example,
-    required this.translation,
-  });
-
-  factory Definition.fromJson(Map<String, dynamic> json) => Definition(
-        meaning: json["meaning"],
-        example: json["example"],
-        translation: json["translation"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "meaning": meaning,
-        "example": example,
-        "translation": translation,
-      };
-}
-
+// 단어관련 함수
 String getCombinedDefinitions(WordDescription? wordDescription) {
   var meanings = wordDescription?.meanings;
 
@@ -45,6 +23,15 @@ String getCombinedExamples(WordDescription? wordDescription) {
             (definition) => '${definition.example} - ${definition.translation}')
         .toList();
     return allExamples.join('\n');
+  }
+  return '';
+}
+
+String getPartOfSpeech(WordDescription? wordDescription) {
+  var meanings = wordDescription?.meanings;
+
+  if (meanings != null && meanings.isNotEmpty) {
+    return meanings.map((meaning) => meaning.partOfSpeech).join(', ');
   }
   return '';
 }
