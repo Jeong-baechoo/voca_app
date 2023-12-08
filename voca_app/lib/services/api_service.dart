@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:voca_app/models/word_description.dart';
 import 'package:voca_app/providers/word_description_provider.dart';
-import 'package:voca_app/widgets/input_dialog.dart';
+import 'package:voca_app/widgets/dialogs.dart';
 
 class ApiService {
   static Future<void> sendChatRequest({
