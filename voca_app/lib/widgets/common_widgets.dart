@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voca_app/providers/voca_provider.dart';
-import 'package:voca_app/screens/list_view_page.dart';
+import 'package:voca_app/screens/myVoca/list_view_page.dart';
 
 Widget buildInputField(String label, TextEditingController controller,
     {int maxLines = 1}) {

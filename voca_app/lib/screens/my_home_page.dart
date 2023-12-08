@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voca_app/providers/page_provider.dart';
 import 'package:voca_app/providers/word_description_provider.dart';
-import 'package:voca_app/screens/word_list_screen.dart';
-import 'package:voca_app/screens/dic_page.dart';
-import 'package:voca_app/screens/quiz_screen.dart';
-import 'package:voca_app/screens/recomend_page.dart';
+import 'package:voca_app/screens/myVoca/word_list_screen.dart';
+import 'package:voca_app/screens/dictionary/dic_page.dart';
+import 'package:voca_app/screens/quiz/quiz_screen.dart';
+import 'package:voca_app/screens/recomend/recomend_page.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voca_app/models/word_description.dart';
 import 'package:voca_app/providers/word_description_provider.dart';
-import 'package:voca_app/screens/dic_search_screen.dart';
+import 'package:voca_app/screens/dictionary/dic_search_screen.dart';
 import 'package:voca_app/widgets/dialogs.dart';
 
 class DicPage extends StatelessWidget {

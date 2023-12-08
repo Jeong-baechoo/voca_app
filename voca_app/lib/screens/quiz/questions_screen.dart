@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voca_app/screens/mutiple_choice.dart';
+import 'package:voca_app/screens/quiz/mutiple_choice.dart';
 
 class QuestionsScreen extends StatefulWidget {
   const QuestionsScreen({

@@ -1,7 +1,6 @@
-import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:voca_app/providers/word_provider.dart';
-import 'package:voca_app/screens/flip_card_container.dart';
+import 'package:voca_app/screens/myVoca/flip_card_container.dart';
 
 class FilpCardPage extends StatelessWidget {
   const FilpCardPage({super.key, this.selectedIndex});

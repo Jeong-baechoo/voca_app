@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voca_app/providers/word_provider.dart';
-import 'package:voca_app/screens/mutiple_choice.dart';
-import 'package:voca_app/screens/spelling_quiz_screen.dart';
+import 'package:voca_app/screens/quiz/mutiple_choice.dart';
+import 'package:voca_app/screens/quiz/spelling_quiz_screen.dart';
 
 class QuizChoice extends StatelessWidget {
   const QuizChoice({Key? key}) : super(key: key);

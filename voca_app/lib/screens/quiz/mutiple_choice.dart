@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voca_app/providers/word_provider.dart';
-import 'package:voca_app/screens/questions_screen.dart';
+import 'package:voca_app/screens/quiz/questions_screen.dart';
 
 List<String> usedWordsList = [];
 List<String> correctMeanings = [];

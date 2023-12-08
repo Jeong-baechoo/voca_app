@@ -4,8 +4,8 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:voca_app/models/word_description.dart';
 import 'package:voca_app/providers/voca_provider.dart';
 import 'package:voca_app/providers/word_provider.dart';
-import 'package:voca_app/screens/dic_page.dart';
-import 'package:voca_app/screens/filp_card_page.dart';
+import 'package:voca_app/screens/dictionary/dic_page.dart';
+import 'package:voca_app/screens/myVoca/filp_card_page.dart';
 import 'package:voca_app/widgets/dialogs.dart';
 
 //단어들 나열 위젯
