@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voca_app/providers/voca_provider.dart';
+import 'package:voca_app/widgets/dialogs.dart';
 
 class ListViewPage extends StatelessWidget {
   const ListViewPage({super.key});
@@ -26,85 +27,10 @@ class ListViewPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showNewDialog(context);
+          showNewDialog(context);
         },
         child: const Icon(Icons.add),
       ),
-    );
-  }
-
-  Future<bool> _showConfirmationDialog(BuildContext context) async {
-    return await showDialog<bool>(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('확인'),
-              content: const Text('이 항목을 삭제하시겠습니까?'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(false); // 삭제 취소
-                  },
-                  child: const Text('취소'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(true); // 삭제 확인
-                  },
-                  child: const Text('삭제'),
-                ),
-              ],
-            );
-          },
-        ) ??
-        false; // 다이얼로그가 닫힐 경우 false 반환
-  }
-
-  Future<void> _showEditDialog(BuildContext context, int index) async {
-    TextEditingController controller = TextEditingController();
-
-    return await showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // 입력창
-              TextField(
-                controller: controller,
-                decoration: const InputDecoration(
-                  hintText: '수정할 단어장 이름',
-                ),
-              ),
-              const SizedBox(height: 16.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  // 취소 버튼
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context); // 바텀 시트 닫기
-                    },
-                    child: const Text('취소'),
-                  ),
-                  // 확인 버튼
-                  ElevatedButton(
-                    onPressed: () {
-                      Provider.of<VocaProvider>(context, listen: false)
-                          .updateVocabularySet(index, controller.text);
-
-                      Navigator.pop(context); // 바텀 시트 닫기
-                    },
-                    child: const Text('확인'),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 
@@ -125,14 +51,14 @@ class ListViewPage extends StatelessWidget {
                   title: const Text('수정'),
                   onTap: () {
                     Navigator.pop(context);
-                    _showEditDialog(context, index);
+                    showEditDialog(context, index);
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.delete),
                   title: const Text('삭제'),
                   onTap: () {
-                    _showConfirmationDialog(context).then((value) {
+                    showConfirmationDialog(context).then((value) {
                       if (value) {
                         Provider.of<VocaProvider>(context, listen: false)
                             .deleteVocabularySet(index); // 리스트에서 해당 항목 삭제
@@ -159,45 +85,6 @@ class ListViewPage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Future<void> _showNewDialog(BuildContext context) async {
-    String newItem = ''; // 사용자가 입력한 새로운 아이템 이름
-
-    return await showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('새로운 단어장 추가'),
-          content: TextField(
-            onChanged: (value) {
-              newItem = value;
-            },
-            decoration: const InputDecoration(
-              hintText: '새로운 단어장 이름',
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // 취소
-              },
-              child: const Text('취소'),
-            ),
-            TextButton(
-              onPressed: () {
-                if (newItem.isNotEmpty) {
-                  Provider.of<VocaProvider>(context, listen: false)
-                      .addVocabularySet(newItem);
-                }
-                Navigator.of(context).pop(); // 다이얼로그 닫기
-              },
-              child: const Text('추가'),
-            ),
-          ],
-        );
-      },
     );
   }
 }

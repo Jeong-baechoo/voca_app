@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voca_app/providers/page_provider.dart';
+import 'package:voca_app/providers/word_description_provider.dart';
 import 'package:voca_app/screens/word_list_screen.dart';
 import 'package:voca_app/screens/dic_page.dart';
 import 'package:voca_app/screens/quiz_screen.dart';
@@ -33,6 +34,8 @@ class MyHomePage extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentPage,
         onTap: (index) {
+          Provider.of<WordDescriptionProvider>(context, listen: false)
+              .initWordDescription();
           Provider.of<PageProvider>(context, listen: false).selectPage(index);
         },
         type: BottomNavigationBarType.fixed,

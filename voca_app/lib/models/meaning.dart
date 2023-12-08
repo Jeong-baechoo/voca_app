@@ -20,12 +20,3 @@ class Meaning {
         "definitions": List<dynamic>.from(definitions.map((x) => x.toJson())),
       };
 }
-
-// String getPartOfSpeech(WordDescription? wordDescription) {
-//   var meanings = wordDescription?.meanings;
-
-//   if (meanings != null && meanings.isNotEmpty) {
-//     return meanings.map((meaning) => meaning.partOfSpeech).join(', ');
-//   }
-//   return '';
-// }

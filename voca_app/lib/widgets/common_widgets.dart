@@ -1,5 +1,8 @@
 // lib/widgets/common_widgets.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:voca_app/providers/voca_provider.dart';
+import 'package:voca_app/screens/list_view_page.dart';
 
 Widget buildInputField(String label, TextEditingController controller,
     {int maxLines = 1}) {
@@ -27,5 +30,29 @@ Widget buildInputField(String label, TextEditingController controller,
         ),
       ],
     ),
+  );
+}
+
+Widget buildMenuSection(BuildContext context) {
+  final vocalbularySet = Provider.of<VocaProvider>(context).vocabularySets;
+
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      InkWell(
+        onTap: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const ListViewPage()));
+        },
+        child: Text(
+          '>${vocalbularySet[Provider.of<VocaProvider>(context).selectedVocaSet]}',
+          style: const TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.amber,
+          ),
+        ),
+      ),
+    ],
   );
 }
