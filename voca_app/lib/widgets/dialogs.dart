@@ -193,3 +193,27 @@ Future<void> showNewDialog(BuildContext context) async {
     },
   );
 }
+
+Widget buildLoadingDialog(BuildContext context) {
+  return Stack(
+    children: [
+      // 전체 화면 어둡게 하는 배경
+      Positioned.fill(
+        child: Container(
+          color: Colors.blue, // 배경 색상 설정
+        ),
+      ),
+      // 암기빵이라고 적힌 위젯
+      const Center(
+        child: Text(
+          '암기빵',
+          style: TextStyle(
+            fontSize: 24,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    ],
+  );
+}

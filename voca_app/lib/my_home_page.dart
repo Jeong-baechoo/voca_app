@@ -27,7 +27,6 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int currentPage = Provider.of<PageProvider>(context).selectedPage;
-
     return Scaffold(
       appBar: AppBar(title: Text(_titles[currentPage])),
       body: _pages[currentPage],

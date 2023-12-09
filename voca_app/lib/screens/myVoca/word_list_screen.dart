@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:voca_app/providers/voca_provider.dart';
 import 'package:voca_app/widgets/build_word_list.dart';
 import 'package:voca_app/widgets/common_widgets.dart';
 
@@ -7,7 +9,6 @@ class DetailScreen extends StatelessWidget {
   const DetailScreen({super.key});
 
   final isSecondButtonPressed = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

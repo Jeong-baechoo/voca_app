@@ -1,29 +1,90 @@
+import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-//단어장 관리 프로바이더
 class VocaProvider with ChangeNotifier {
   int _selectedVocaSet = 0;
-  final List<String> _vocabularySets = ['내 단어장', 'Item : 1'];
+  final List<String> _vocabularySets = ['내 단어장'];
 
   List<String> get vocabularySets => _vocabularySets;
   int get selectedVocaSet => _selectedVocaSet;
 
+  final db = FirebaseFirestore.instance;
+
+  // 앱 시작시 Firestore에서 단어장 리스트를 가져와 업데이트
+  Future<void> fetchAndSetVocabularySets() async {
+    try {
+      final wordListsSnapshot = db
+          .collection('users')
+          .doc('9Z3gdqPhTd37B6xVpf0H') //user_id
+          .collection('wordLists');
+      _vocabularySets.clear();
+      // Firestore에서 가져온 데이터를 리스트에 추가
+      await wordListsSnapshot.where("listName").get().then(
+        (querySnapshot) {
+          for (var docSnapshot in querySnapshot.docs) {
+            _vocabularySets.add(docSnapshot.data()['listName']);
+          }
+        },
+        onError: (e) => print("Error completing: $e"),
+      );
+    } catch (error) {
+      print('Error fetching vocabulary sets: $error');
+    }
+  }
+
+  // 선택된 단어장의 인덱스
   void selectVocaSet(int newValue) {
     _selectedVocaSet = newValue;
     notifyListeners();
   }
 
-  void addVocabularySet(String newVocaSet) {
+  Future<void> addVocabularySet(String newVocaSet) async {
     _vocabularySets.add(newVocaSet);
+
+    // Firestore에 새로운 단어장 추가
+    await db
+        .collection('users')
+        .doc('9Z3gdqPhTd37B6xVpf0H')
+        .collection('wordLists')
+        .add({
+      'listName': newVocaSet,
+    });
     notifyListeners();
   }
 
-  void updateVocabularySet(int index, String newVocaSet) {
+  Future<void> updateVocabularySet(int index, String newVocaSet) async {
+    // Firestore에서 해당 단어장 업데이트
+    QuerySnapshot querySnapshot = await db
+        .collection('users')
+        .doc('9Z3gdqPhTd37B6xVpf0H')
+        .collection('wordLists')
+        .where('listName', isEqualTo: _vocabularySets[index])
+        .get();
+
+    for (var doc in querySnapshot.docs) {
+      print(doc.data());
+      doc.reference.update({
+        'listName': newVocaSet,
+        // 다른 필드가 있다면 여기에 추가
+      });
+    }
     _vocabularySets[index] = newVocaSet;
     notifyListeners();
   }
 
-  void deleteVocabularySet(int index) {
+  Future<void> deleteVocabularySet(int index) async {
+    print(_vocabularySets[index]);
+    QuerySnapshot querySnapshot = await db
+        .collection('users')
+        .doc('9Z3gdqPhTd37B6xVpf0H')
+        .collection('wordLists')
+        .where('listName', isEqualTo: _vocabularySets[index])
+        .get();
+
+    for (var doc in querySnapshot.docs) {
+      doc.reference.delete();
+    }
     _vocabularySets.removeAt(index);
     notifyListeners();
   }

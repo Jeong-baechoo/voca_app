@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "745833094851",
+    "firebase_url": "https://voca-2ad05-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "voca-2ad05",
+    "storage_bucket": "voca-2ad05.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:745833094851:android:324b8beda43dc9d32f0c76",
+        "android_client_info": {
+          "package_name": "com.example.firebase_db"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-9kinBXewIi58zVpvB1aBuCDAUhXZDNk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:745833094851:android:b6a46b1ca2299c0d2f0c76",
+        "android_client_info": {
+          "package_name": "com.example.test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-9kinBXewIi58zVpvB1aBuCDAUhXZDNk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:745833094851:android:23c745edadfe89352f0c76",
+        "android_client_info": {
+          "package_name": "com.example.voca_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-9kinBXewIi58zVpvB1aBuCDAUhXZDNk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
