@@ -61,50 +61,61 @@ Widget buildSavedWordsList(context) {
               },
             );
           },
-          child: Column(
-            children: <Widget>[
-              ListTile(
-                title: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            currentFlashcard['word'] as String,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall!
-                                .copyWith(
-                                  color: Colors.black,
-                                ),
-                          ),
-                          Text('[${currentFlashcard['phonetics']}]')
-                        ],
-                      ),
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+            height: 100,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey), // Add border if needed
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: ListTile(
+              title: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          currentFlashcard['word'] as String,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall!
+                              .copyWith(
+                                color: Colors.black,
+                              ),
+                        ),
+                        Text('[${currentFlashcard['phonetics']}]')
+                      ],
                     ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            '품사: ${currentFlashcard['meanings'][0]['partOfSpeech'] as String}',
-                            style: const TextStyle(color: Colors.green),
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        for (var meaning in currentFlashcard['meanings'])
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                '[${meaning['partOfSpeech'] as String}]',
+                                style: const TextStyle(
+                                    color: Colors.green, fontSize: 13),
+                              ),
+                              Text(
+                                meaning['definitions'][0]['meaning'] as String,
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                              const SizedBox(
+                                  height:
+                                      8), // Add some spacing between meanings
+                            ],
                           ),
-                          Text(
-                            currentFlashcard['meanings'][0]['definitions'][0]
-                                ['meaning'] as String,
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ],
-                      ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              const Divider(color: Color.fromARGB(255, 170, 170, 170)),
-            ],
+            ),
           ),
         );
       },

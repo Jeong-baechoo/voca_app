@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:voca_app/providers/voca_provider.dart';
 import 'package:voca_app/widgets/build_word_list.dart';
 import 'package:voca_app/widgets/common_widgets.dart';
 
@@ -14,9 +12,12 @@ class DetailScreen extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          const SizedBox(height: 20),
-          buildMenuSection(context),
-          const Divider(color: Colors.black),
+          Container(
+            margin: const EdgeInsets.all(20),
+            alignment: Alignment.centerLeft,
+            child: buildMenuSection(context),
+          ),
+          const Divider(color: Colors.grey),
           Expanded(
             child: buildSavedWordsList(context),
           ),

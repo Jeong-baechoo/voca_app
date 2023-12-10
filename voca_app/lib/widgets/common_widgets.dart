@@ -36,23 +36,18 @@ Widget buildInputField(String label, TextEditingController controller,
 Widget buildMenuSection(BuildContext context) {
   final vocalbularySet = Provider.of<VocaProvider>(context).vocabularySets;
 
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      InkWell(
-        onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const ListViewPage()));
-        },
-        child: Text(
-          '>${vocalbularySet[Provider.of<VocaProvider>(context).selectedVocaSet]}',
-          style: const TextStyle(
-            fontSize: 16.0,
-            fontWeight: FontWeight.bold,
-            color: Colors.amber,
-          ),
-        ),
+  return InkWell(
+    onTap: () {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const ListViewPage()));
+    },
+    child: Text(
+      '단어장 선택 : ${vocalbularySet[Provider.of<VocaProvider>(context).selectedVocaSet]}',
+      style: const TextStyle(
+        fontSize: 16.0,
+        fontWeight: FontWeight.bold,
+        color: Colors.amber,
       ),
-    ],
+    ),
   );
 }
