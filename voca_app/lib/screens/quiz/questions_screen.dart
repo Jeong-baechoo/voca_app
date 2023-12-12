@@ -3,10 +3,10 @@ import 'package:voca_app/screens/quiz/mutiple_choice.dart';
 
 class QuestionsScreen extends StatefulWidget {
   const QuestionsScreen({
-    Key? key,
+    super.key,
     required this.onSelectAnswer,
     required this.questions,
-  }) : super(key: key);
+  });
 
   final void Function(String answer) onSelectAnswer;
   final List<Map<String, dynamic>> questions;
@@ -110,10 +110,10 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
 
 class AnswerButton extends StatelessWidget {
   const AnswerButton({
-    Key? key,
+    super.key,
     required this.answerText,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   final String answerText;
   final void Function() onTap;

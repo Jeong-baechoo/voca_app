@@ -93,11 +93,11 @@ class QuizQuestion {
 
 class ResultScreen extends StatelessWidget {
   const ResultScreen({
-    Key? key,
+    super.key,
     required this.chosenAnswers,
     required this.restart,
     required this.numTotalQuestions,
-  }) : super(key: key);
+  });
 
   final List<String> chosenAnswers;
   final void Function() restart;
@@ -171,8 +171,8 @@ class ResultScreen extends StatelessWidget {
 class QuestionsSummary extends StatelessWidget {
   const QuestionsSummary(
     this.summaryData, {
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final List<Map<String, Object>> summaryData;
 
@@ -229,10 +229,10 @@ class QuestionsSummary extends StatelessWidget {
 
 class QuestionIdentifier extends StatelessWidget {
   const QuestionIdentifier({
-    Key? key,
+    super.key,
     required this.isCorrectAnswer,
     required this.questionIndex,
-  }) : super(key: key);
+  });
 
   final bool isCorrectAnswer;
   final int questionIndex;

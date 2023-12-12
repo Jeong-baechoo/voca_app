@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SpellingQuizScreen extends StatefulWidget {
-  const SpellingQuizScreen({Key? key, required this.flashcards})
-      : super(key: key);
+  const SpellingQuizScreen({super.key, required this.flashcards});
 
   final List<Map<String, dynamic>> flashcards;
 

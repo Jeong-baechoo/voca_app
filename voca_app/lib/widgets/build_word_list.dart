@@ -14,6 +14,7 @@ Widget buildSavedWordsList(context) {
   final currentVocaIndex = Provider.of<VocaProvider>(context).selectedVocaSet;
   final currentVocaSet = Provider.of<WordProvider>(context).myVocaSet;
   return Scaffold(
+    backgroundColor: const Color.fromARGB(255, 0xd9, 0xd9, 0xd6),
     body: ListView.builder(
       itemCount: currentVocaSet[currentVocaIndex].length,
       itemBuilder: (context, index) {
@@ -65,29 +66,36 @@ Widget buildSavedWordsList(context) {
             margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
             height: 100,
             decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 0xff, 0xfe, 0xfe),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 1,
+                  blurRadius: 3,
+                  offset:
+                      const Offset(0, 1), // changes the position of the shadow
+                ),
+              ],
               border: Border.all(color: Colors.grey), // Add border if needed
               borderRadius: BorderRadius.circular(10.0),
             ),
             child: ListTile(
               title: Row(
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          currentFlashcard['word'] as String,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall!
-                              .copyWith(
-                                color: Colors.black,
-                              ),
-                        ),
-                        Text('[${currentFlashcard['phonetics']}]')
-                      ],
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        currentFlashcard['word'] as String,
+                        style:
+                            Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                  color: Colors.black,
+                                ),
+                      ),
+                      Text('[${currentFlashcard['phonetics']}]')
+                    ],
                   ),
+                  const SizedBox(width: 16), // Add spacing between columns
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -99,11 +107,11 @@ Widget buildSavedWordsList(context) {
                               Text(
                                 '[${meaning['partOfSpeech'] as String}]',
                                 style: const TextStyle(
-                                    color: Colors.green, fontSize: 13),
+                                    color: Colors.green, fontSize: 14),
                               ),
                               Text(
                                 meaning['definitions'][0]['meaning'] as String,
-                                style: Theme.of(context).textTheme.bodyLarge,
+                                style: const TextStyle(fontSize: 18),
                               ),
                               const SizedBox(
                                   height:

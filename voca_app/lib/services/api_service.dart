@@ -10,8 +10,7 @@ class ApiService {
     required WordDescriptionProvider wordDescriptionProvider,
   }) async {
     const String apiUrl = 'https://api.openai.com/v1/chat/completions';
-    const String openaiApiKey =
-        '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';
+    const openaiApiKey = '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';
 
     try {
       final Map<String, dynamic> requestData = {

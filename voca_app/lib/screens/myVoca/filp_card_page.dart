@@ -3,8 +3,8 @@ import 'package:voca_app/providers/word_provider.dart';
 import 'package:voca_app/screens/myVoca/flip_card_container.dart';
 
 class FilpCardPage extends StatelessWidget {
-  const FilpCardPage({super.key, this.selectedIndex});
-  final selectedIndex;
+  const FilpCardPage({super.key, required this.selectedIndex});
+  final int selectedIndex;
   Widget _renderBackground() {
     return Container(
       decoration:

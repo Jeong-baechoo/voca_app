@@ -10,14 +10,14 @@ class DetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 0xd9, 0xd9, 0xd6),
       body: Column(
         children: [
           Container(
-            margin: const EdgeInsets.all(20),
+            margin: const EdgeInsets.symmetric(vertical: 3),
             alignment: Alignment.centerLeft,
             child: buildMenuSection(context),
           ),
-          const Divider(color: Colors.grey),
           Expanded(
             child: buildSavedWordsList(context),
           ),

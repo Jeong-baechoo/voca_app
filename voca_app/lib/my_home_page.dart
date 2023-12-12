@@ -28,7 +28,13 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     int currentPage = Provider.of<PageProvider>(context).selectedPage;
     return Scaffold(
-      appBar: AppBar(title: Text(_titles[currentPage])),
+      appBar: AppBar(
+          title: Text(_titles[currentPage],
+              style: const TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+              )),
+          backgroundColor: Colors.black),
       body: _pages[currentPage],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentPage,

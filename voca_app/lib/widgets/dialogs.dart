@@ -62,10 +62,14 @@ Future<void> showInputDialog(
           ),
           TextButton(
             onPressed: () {
-              print('ok');
-              print(apiResponseContent);
               Map<String, dynamic> contentMap = json.decode(apiResponseContent);
               flashcardsList.add(contentMap);
+
+              VocaProvider vocaProvider =
+                  Provider.of<VocaProvider>(context, listen: false);
+              Provider.of<WordProvider>(context, listen: false).addWord(
+                  vocaProvider.vocabularySets[vocaProvider.selectedVocaSet],
+                  WordDescription.fromJson(contentMap));
 
               Navigator.of(context).pop(); // 다이얼로그 닫기
             },
@@ -183,6 +187,9 @@ Future<void> showNewDialog(BuildContext context) async {
               if (newItem.isNotEmpty) {
                 Provider.of<VocaProvider>(context, listen: false)
                     .addVocabularySet(newItem);
+                final wocaProvider =
+                    Provider.of<WordProvider>(context, listen: false);
+                wocaProvider.myVocaSet.add([]); //로컬에 새로 만든 단어장에 빈 단어리스트 넣기
               }
               Navigator.of(context).pop(); // 다이얼로그 닫기
             },

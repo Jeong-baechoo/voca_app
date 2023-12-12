@@ -6,10 +6,10 @@ class FlipCardContainer extends StatelessWidget {
   final double containerWidth; // 화면 가로 폭에 따른 컨테이너 폭
 
   const FlipCardContainer({
-    Key? key,
+    super.key,
     required this.flashCard,
     required this.containerWidth,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
