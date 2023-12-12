@@ -17,7 +17,7 @@ class QuestionsScreen extends StatefulWidget {
 
 class _QuestionsScreenState extends State<QuestionsScreen> {
   late QuizQuestion currentQuestion;
-  Set<String> usedWords = Set<String>(); // Track used words
+  Set<String> usedWords = <String>{}; // Track used words
 
   @override
   void initState() {

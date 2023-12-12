@@ -9,6 +9,8 @@ import 'package:voca_app/utilities/word_utils.dart';
 import 'package:voca_app/widgets/common_widgets.dart';
 
 String apiResponseContent = '';
+
+//단어 추가 다이얼로그
 Future<void> showInputDialog(
   BuildContext context,
   WordDescription? yourWordDescription,
@@ -68,9 +70,11 @@ Future<void> showInputDialog(
               VocaProvider vocaProvider =
                   Provider.of<VocaProvider>(context, listen: false);
               Provider.of<WordProvider>(context, listen: false).addWord(
+                  vocaProvider.selectedVocaSet,
                   vocaProvider.vocabularySets[vocaProvider.selectedVocaSet],
                   WordDescription.fromJson(contentMap));
 
+              apiResponseContent = '';
               Navigator.of(context).pop(); // 다이얼로그 닫기
             },
             style: TextButton.styleFrom(
@@ -84,6 +88,7 @@ Future<void> showInputDialog(
   );
 }
 
+//단어삭제 다이얼로그
 Future<bool> showConfirmationDialog(BuildContext context) async {
   return await showDialog<bool>(
         context: context,
@@ -111,6 +116,7 @@ Future<bool> showConfirmationDialog(BuildContext context) async {
       false; // 다이얼로그가 닫힐 경우 false 반환
 }
 
+//딘어장 수정 다이얼로그
 Future<void> showEditDialog(BuildContext context, int index) async {
   TextEditingController controller = TextEditingController();
 
@@ -159,6 +165,7 @@ Future<void> showEditDialog(BuildContext context, int index) async {
   );
 }
 
+// 단어장 추가 다이얼로그
 Future<void> showNewDialog(BuildContext context) async {
   String newItem = ''; // 사용자가 입력한 새로운 아이템 이름
 

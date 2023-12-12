@@ -61,10 +61,10 @@ class _MyAppState extends State<MyApp> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           // 로딩 중이면 로딩 화면을 표시
-          return LoadingScreen();
+          return const LoadingScreen();
         } else if (snapshot.hasError) {
           // 에러가 있으면 에러 화면을 표시
-          return ErrorScreen();
+          return const ErrorScreen();
         } else {
           // 로딩이 완료되면 MyHomePage로 이동
           return MyHomePage();
@@ -76,9 +76,11 @@ class _MyAppState extends State<MyApp> {
 
 // 로딩 화면 위젯
 class LoadingScreen extends StatelessWidget {
+  const LoadingScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: CircularProgressIndicator(),
       ),
@@ -88,9 +90,11 @@ class LoadingScreen extends StatelessWidget {
 
 // 에러 화면 위젯
 class ErrorScreen extends StatelessWidget {
+  const ErrorScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: Text("Error occurred!"),
       ),

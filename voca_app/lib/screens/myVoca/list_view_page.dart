@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voca_app/providers/voca_provider.dart';
+import 'package:voca_app/providers/word_provider.dart';
 import 'package:voca_app/widgets/dialogs.dart';
 
 class ListViewPage extends StatelessWidget {
@@ -61,7 +62,11 @@ class ListViewPage extends StatelessWidget {
                     showConfirmationDialog(context).then((value) {
                       if (value) {
                         Provider.of<VocaProvider>(context, listen: false)
-                            .deleteVocabularySet(index); // 리스트에서 해당 항목 삭제
+                            .deleteVocabularySet(
+                                Provider.of<WordProvider>(context,
+                                        listen: false)
+                                    .myVocaSet,
+                                index); // 리스트에서 해당 항목 삭제
                       }
                       Navigator.pop(context); // 바텀 시트 닫기
                     });

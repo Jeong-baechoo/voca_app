@@ -38,6 +38,7 @@ class VocaProvider with ChangeNotifier {
   // 선택된 단어장의 인덱스
   void selectVocaSet(int newValue) {
     _selectedVocaSet = newValue;
+
     notifyListeners();
   }
 
@@ -74,7 +75,7 @@ class VocaProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> deleteVocabularySet(int index) async {
+  Future<void> deleteVocabularySet(List<dynamic> myVocaSet, int index) async {
     print(_vocabularySets[index]);
     QuerySnapshot querySnapshot = await db
         .collection('users')
@@ -86,6 +87,7 @@ class VocaProvider with ChangeNotifier {
     for (var doc in querySnapshot.docs) {
       doc.reference.delete();
     }
+    myVocaSet.removeAt(index);
     _vocabularySets.removeAt(index);
     notifyListeners();
   }

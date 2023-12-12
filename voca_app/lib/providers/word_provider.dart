@@ -53,9 +53,9 @@ class WordProvider with ChangeNotifier {
     }
   }
 
-  Future<void> addWord(String selectedVocaSetName, WordDescription word) async {
+  Future<void> addWord(int selectedVocaSet, String selectedVocaSetName,
+      WordDescription word) async {
     Map<String, dynamic> newWord = word.toJson();
-
     try {
       // Firestore에서 모든 단어장 가져오기
       QuerySnapshot wordListsSnapshot = await FirebaseFirestore.instance
@@ -79,33 +79,49 @@ class WordProvider with ChangeNotifier {
           .collection('words')
           .add(newWord);
 
+      myVocaSet[selectedVocaSet].add(newWord);
       print('단어 추가 성공');
     } catch (e) {
       print('단어 추가 오류: $e');
     }
+    notifyListeners();
   }
 
-  Future<void> deleteWord(int selectedVocaSet, int index) async {
+  Future<void> deleteWord(
+      String currentVocaSet, int selectedVocaSet, int index) async {
     Map<String, dynamic> deletedWord = myVocaSet[selectedVocaSet][index];
 
-    // Firebase에서 단어 삭제
-    await firestore
-        .collection('users')
-        .doc('userId')
-        .collection('wordLists')
-        .doc('qTQp8wTyqa9xxDlJYmjc')
-        .collection('words')
-        .where('word', isEqualTo: deletedWord['word'])
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        doc.reference.delete();
-      });
-    });
+    try {
+      CollectionReference<Map<String, dynamic>> wordListsCollection =
+          firestore.collection('users').doc(userId).collection('wordLists');
 
-    // 로컬 상태 갱신
-    myVocaSet[selectedVocaSet].removeAt(index);
-    notifyListeners();
+      // Find the wordListId based on the listName
+      QuerySnapshot<Map<String, dynamic>> wordListQuery =
+          await wordListsCollection
+              .where('listName', isEqualTo: currentVocaSet)
+              .get();
+
+      if (wordListQuery.docs.isNotEmpty) {
+        String wordListId = wordListQuery.docs.first.id;
+
+        // Use the wordListId to delete the word from the 'words' collection
+        CollectionReference<Map<String, dynamic>> wordsCollection =
+            wordListsCollection.doc(wordListId).collection('words');
+        QuerySnapshot<Map<String, dynamic>> wordQuery = await wordsCollection
+            .where('word', isEqualTo: deletedWord['word'])
+            .get();
+
+        wordQuery.docs.forEach((doc) async {
+          await doc.reference.delete();
+        });
+
+        // Update the local state
+        myVocaSet[selectedVocaSet].removeAt(index);
+        notifyListeners();
+      }
+    } catch (error) {
+      print('Error deleting word: $error');
+    }
   }
 }
 

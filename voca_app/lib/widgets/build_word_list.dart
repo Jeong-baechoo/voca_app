@@ -11,14 +11,15 @@ import 'package:voca_app/widgets/dialogs.dart';
 //단어들 나열 위젯
 Widget buildSavedWordsList(context) {
   WordDescription? yourWordDescription;
-  final currentVocaIndex = Provider.of<VocaProvider>(context).selectedVocaSet;
+  final currentVoca = Provider.of<VocaProvider>(context);
   final currentVocaSet = Provider.of<WordProvider>(context).myVocaSet;
   return Scaffold(
     backgroundColor: const Color.fromARGB(255, 0xd9, 0xd9, 0xd6),
     body: ListView.builder(
-      itemCount: currentVocaSet[currentVocaIndex].length,
+      itemCount: currentVocaSet[currentVoca.selectedVocaSet].length,
       itemBuilder: (context, index) {
-        final currentFlashcard = currentVocaSet[currentVocaIndex][index];
+        final currentFlashcard =
+            currentVocaSet[currentVoca.selectedVocaSet][index];
 
         return InkWell(
           onTap: () {
@@ -50,7 +51,11 @@ Widget buildSavedWordsList(context) {
                         showConfirmationDialog(context).then((value) {
                           if (value) {
                             Provider.of<WordProvider>(context, listen: false)
-                                .deleteWord(currentVocaIndex, index);
+                                .deleteWord(
+                                    currentVoca.vocabularySets[
+                                        currentVoca.selectedVocaSet],
+                                    currentVoca.selectedVocaSet,
+                                    index);
                             // 리스트에서 해당 항목 삭제
                           }
                           Navigator.pop(context); // 바텀 시트 닫기
