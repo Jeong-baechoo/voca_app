@@ -22,7 +22,6 @@ class WordProvider with ChangeNotifier {
           .doc(userId)
           .collection('wordLists')
           .get();
-      print(wordListsSnapshot.size);
       // 가져온 각 단어장에 대해 단어를 초기화하고 리스트에 추가
       for (var wordListDoc in wordListsSnapshot.docs) {
         String wordListId = wordListDoc.id;

@@ -69,7 +69,6 @@ Widget buildSavedWordsList(context) {
           },
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-            height: 100,
             decoration: BoxDecoration(
               color: const Color.fromARGB(255, 0xff, 0xfe, 0xfe),
               boxShadow: [
@@ -97,7 +96,7 @@ Widget buildSavedWordsList(context) {
                                   color: Colors.black,
                                 ),
                       ),
-                      Text('[${currentFlashcard['phonetics']}]')
+                      Text('[${currentFlashcard['phonetics']}]'),
                     ],
                   ),
                   const SizedBox(width: 16), // Add spacing between columns
@@ -112,15 +111,26 @@ Widget buildSavedWordsList(context) {
                               Text(
                                 '[${meaning['partOfSpeech'] as String}]',
                                 style: const TextStyle(
-                                    color: Colors.green, fontSize: 14),
+                                  color: Colors.green,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                              Text(
-                                meaning['definitions'][0]['meaning'] as String,
-                                style: const TextStyle(fontSize: 18),
-                              ),
+                              for (var definition
+                                  in meaning['definitions'] as List<dynamic>)
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      definition['meaning'] as String,
+                                      style: const TextStyle(fontSize: 18),
+                                    ),
+                                    const SizedBox(height: 8),
+                                  ],
+                                ),
                               const SizedBox(
-                                  height:
-                                      8), // Add some spacing between meanings
+                                height: 8,
+                              ), // Add some spacing between meanings
                             ],
                           ),
                       ],

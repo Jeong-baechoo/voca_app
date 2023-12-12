@@ -19,8 +19,20 @@ String getCombinedExamples(WordDescription? wordDescription) {
   if (meanings != null && meanings.isNotEmpty) {
     List<String> allExamples = meanings
         .expand((meaning) => meaning.definitions)
-        .map(
-            (definition) => '${definition.example} - ${definition.translation}')
+        .map((definition) => definition.example)
+        .toList();
+    return allExamples.join('\n');
+  }
+  return '';
+}
+
+String getCombinedtranslates(WordDescription? wordDescription) {
+  var meanings = wordDescription?.meanings;
+
+  if (meanings != null && meanings.isNotEmpty) {
+    List<String> allExamples = meanings
+        .expand((meaning) => meaning.definitions)
+        .map((definition) => definition.translation)
         .toList();
     return allExamples.join('\n');
   }

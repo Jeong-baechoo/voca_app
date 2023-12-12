@@ -65,7 +65,6 @@ class VocaProvider with ChangeNotifier {
         .get();
 
     for (var doc in querySnapshot.docs) {
-      print(doc.data());
       doc.reference.update({
         'listName': newVocaSet,
         // 다른 필드가 있다면 여기에 추가
@@ -76,7 +75,6 @@ class VocaProvider with ChangeNotifier {
   }
 
   Future<void> deleteVocabularySet(List<dynamic> myVocaSet, int index) async {
-    print(_vocabularySets[index]);
     QuerySnapshot querySnapshot = await db
         .collection('users')
         .doc(userId)

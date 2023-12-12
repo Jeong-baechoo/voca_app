@@ -1,5 +1,4 @@
 // lib/widgets/input_dialog.dart
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voca_app/models/word_description.dart';
@@ -10,7 +9,7 @@ import 'package:voca_app/widgets/common_widgets.dart';
 
 String apiResponseContent = '';
 
-//단어 추가 다이얼로그
+//단어 추가 다이얼로그 (사전)
 Future<void> showInputDialog(
   BuildContext context,
   WordDescription? yourWordDescription,
@@ -25,7 +24,8 @@ Future<void> showInputDialog(
       TextEditingController(text: getCombinedDefinitions(yourWordDescription));
   TextEditingController exampleController =
       TextEditingController(text: getCombinedExamples(yourWordDescription));
-
+  TextEditingController translateController =
+      TextEditingController(text: getCombinedtranslates(yourWordDescription));
   return showDialog<void>(
     context: context,
     builder: (BuildContext context) {
@@ -48,6 +48,7 @@ Future<void> showInputDialog(
                 buildInputField('품사', partOfSpeechController),
                 buildInputField('뜻', definitionController),
                 buildInputField('예문', exampleController),
+                buildInputField('해석', translateController),
               ],
             ),
           ),
@@ -64,15 +65,21 @@ Future<void> showInputDialog(
           ),
           TextButton(
             onPressed: () {
-              Map<String, dynamic> contentMap = json.decode(apiResponseContent);
-              flashcardsList.add(contentMap);
+              final createWordDescription =
+                  WordDescription.createWordDescription(
+                      word: wordController.text,
+                      phonetics: phoneticsController.text,
+                      partOfSpeech: partOfSpeechController.text,
+                      definition: definitionController.text,
+                      example: exampleController.text,
+                      translate: translateController.text);
 
               VocaProvider vocaProvider =
                   Provider.of<VocaProvider>(context, listen: false);
               Provider.of<WordProvider>(context, listen: false).addWord(
                   vocaProvider.selectedVocaSet,
                   vocaProvider.vocabularySets[vocaProvider.selectedVocaSet],
-                  WordDescription.fromJson(contentMap));
+                  createWordDescription);
 
               apiResponseContent = '';
               Navigator.of(context).pop(); // 다이얼로그 닫기

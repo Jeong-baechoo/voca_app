@@ -43,7 +43,6 @@ class ApiService {
       if (response.statusCode == 200) {
         String content = jsonDecode(utf8.decode(response.bodyBytes))['choices']
             [0]['message']['content'];
-        print(content);
         WordDescription wordDescriptionFromJson(String str) =>
             WordDescription.fromJson(json.decode(str));
         final newWordDescription = wordDescriptionFromJson(content);
