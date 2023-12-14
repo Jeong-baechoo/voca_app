@@ -68,7 +68,7 @@ class _SpellingQuizScreenState extends State<SpellingQuizScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('퀴즈 완료'),
-          content: Text('점수: $score / 4'),
+          content: Text('점수: $score / 10'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -97,6 +97,7 @@ class _SpellingQuizScreenState extends State<SpellingQuizScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 3,
         title: Text('스펠링 퀴즈 (${currentIndex + 1}/${quizQuestions.length})'),
       ),
       body: SingleChildScrollView(

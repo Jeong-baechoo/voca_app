@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:voca_app/providers/word_provider.dart';
 import 'package:voca_app/screens/quiz/questions_screen.dart';
 
 List<String> usedWordsList = [];
@@ -7,25 +6,33 @@ List<String> correctMeanings = [];
 late List<Map<String, dynamic>> quizQuestions;
 
 class Quiz extends StatefulWidget {
-  const Quiz({super.key});
+  const Quiz({
+    Key? key,
+    required this.selectedVocaSet,
+    required this.myWordSets,
+  }) : super(key: key);
+
+  final int selectedVocaSet;
+  final List<List<Map<String, dynamic>>> myWordSets;
 
   @override
   State<Quiz> createState() => _QuizState();
 }
 
 class _QuizState extends State<Quiz> {
-  var activeScreen = 'questions-screen';
+  late int numTotalQuestions;
+  late String activeScreen;
   List<String> selectedAnswer = [];
-  static const numTotalQuestions = 4;
 
   @override
   void initState() {
-    switchScreen();
     super.initState();
+    switchScreen();
   }
 
   void switchScreen() {
     setState(() {
+      numTotalQuestions = widget.myWordSets[widget.selectedVocaSet].length;
       activeScreen = 'questions-screen';
     });
   }
@@ -47,7 +54,7 @@ class _QuizState extends State<Quiz> {
     if (activeScreen == 'questions-screen') {
       screenWidget = QuestionsScreen(
         onSelectAnswer: chooseAnswer,
-        questions: flashcardsList,
+        questions: widget.myWordSets[widget.selectedVocaSet],
       );
     } else {
       screenWidget = ResultScreen(
@@ -57,22 +64,22 @@ class _QuizState extends State<Quiz> {
       );
     }
 
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('4지선다'),
-          leading: activeScreen == 'start-screen'
-              ? null
-              : IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
+    return Scaffold(
+      appBar: AppBar(
+          backgroundColor: const Color.fromARGB(255, 255, 214, 132),
+        elevation: 3,
+        title: const Text('4지선다'),
+        leading: activeScreen == 'start-screen'
+            ? null
+            : IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
-        body: Container(
-          child: screenWidget,
-        ),
+      ),
+      body: Container(
+        child: screenWidget,
       ),
     );
   }

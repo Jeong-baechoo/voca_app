@@ -11,8 +11,8 @@ class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
 
   final List<Widget> _pages = [
-    const DetailScreen(),
-    RecomendPage(),
+    const WordListScreen(),
+    const RecomendPage(),
     const QuizChoice(),
     const DicPage(),
   ];
@@ -31,10 +31,12 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
           title: Text(_titles[currentPage],
               style: const TextStyle(
+                fontFamily: 'Cooper',
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
               )),
-          backgroundColor: Colors.black),
+          elevation: 3,
+          backgroundColor: const Color.fromARGB(255, 255, 214, 132)),
       body: _pages[currentPage],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentPage,

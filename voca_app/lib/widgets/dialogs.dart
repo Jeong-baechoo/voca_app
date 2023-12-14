@@ -203,7 +203,7 @@ Future<void> showNewDialog(BuildContext context) async {
                     .addVocabularySet(newItem);
                 final wocaProvider =
                     Provider.of<WordProvider>(context, listen: false);
-                wocaProvider.myVocaSet.add([]); //로컬에 새로 만든 단어장에 빈 단어리스트 넣기
+                wocaProvider.myWordSets.add([]); //로컬에 새로 만든 단어장에 빈 단어리스트 넣기
               }
               Navigator.of(context).pop(); // 다이얼로그 닫기
             },

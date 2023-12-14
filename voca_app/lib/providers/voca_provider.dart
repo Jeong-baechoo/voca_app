@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 class VocaProvider with ChangeNotifier {
   int _selectedVocaSet = 0;
   final List<String> _vocabularySets = ['내 단어장']; // 단어장 이름들
+  final List<String> _recommendVocaSet = ['수능 단어장'];
+
 
   List<String> get vocabularySets => _vocabularySets;
+  List<String> get recommendVocaSet => _recommendVocaSet;
   int get selectedVocaSet => _selectedVocaSet;
 
   final db = FirebaseFirestore.instance;
@@ -32,6 +35,13 @@ class VocaProvider with ChangeNotifier {
     } catch (error) {
       print('Error fetching vocabulary sets: $error');
     }
+    
+
+      _recommendVocaSet.clear();
+      var querySnapshot = await db.collection("recommendWordLists").get();
+      for(var doc in querySnapshot.docs){
+        _recommendVocaSet.add(doc.id);
+      }
     notifyListeners();
   }
 

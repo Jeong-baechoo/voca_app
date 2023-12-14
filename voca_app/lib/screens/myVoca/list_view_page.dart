@@ -11,6 +11,8 @@ class ListViewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor:const Color.fromARGB(255, 255, 214, 132),
+        elevation: 3,
         title: const Text('단어장 선택'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -65,7 +67,7 @@ class ListViewPage extends StatelessWidget {
                             .deleteVocabularySet(
                                 Provider.of<WordProvider>(context,
                                         listen: false)
-                                    .myVocaSet,
+                                    .myWordSets,
                                 index); // 리스트에서 해당 항목 삭제
                       }
                       Navigator.pop(context); // 바텀 시트 닫기

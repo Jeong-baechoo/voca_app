@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:voca_app/providers/voca_provider.dart';
 import 'package:voca_app/providers/word_provider.dart';
 import 'package:voca_app/screens/quiz/mutiple_choice.dart';
 import 'package:voca_app/screens/quiz/spelling_quiz_screen.dart';
@@ -23,7 +25,11 @@ class QuizChoice extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const Quiz(),
+                     builder: (BuildContext context) {
+                       final wordProvider = Provider.of<WordProvider>(context);
+                       final vocaProvider = Provider.of<VocaProvider>(context);
+                      return Quiz(selectedVocaSet: vocaProvider.selectedVocaSet, myWordSets: wordProvider.myWordSets);
+                  }
                   ),
                 );
               },
@@ -74,7 +80,7 @@ class QuizChoice extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => SpellingQuizScreen(
-                      flashcards: flashcardsList,
+                      flashcards: Provider.of<WordProvider>(context).myWordSets[Provider.of<VocaProvider>(context).selectedVocaSet],
                     ),
                   ),
                 );

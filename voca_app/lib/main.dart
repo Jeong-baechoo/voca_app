@@ -19,10 +19,10 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => VocaProvider()),
-        ChangeNotifierProvider(create: (context) => WordProvider()),
-        ChangeNotifierProvider(create: (context) => PageProvider()),
-        ChangeNotifierProvider(create: (context) => WordDescriptionProvider()),
+        ChangeNotifierProvider(create: (_) => VocaProvider()),
+        ChangeNotifierProvider(create: (_) => WordProvider()),
+        ChangeNotifierProvider(create: (_) => PageProvider()),
+        ChangeNotifierProvider(create: (_) => WordDescriptionProvider()),
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -49,9 +49,10 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
-  void initState() {
+  void didChangeDependencies() {
+    // 이 메서드에서 context에 안전하게 접근 가능
     initdata = initdataBase();
-    super.initState();
+    super.didChangeDependencies();
   }
 
   @override
@@ -74,19 +75,33 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
+
 // 로딩 화면 위젯
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
+    return Scaffold(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // 배경 이미지
+          Image.asset(
+            './images/logo.jpeg',
+            fit: BoxFit.cover,
+          ),
+
+          // 로딩 인디케이터
+          const Center(
+            child: CircularProgressIndicator(),
+          ),
+        ],
       ),
     );
   }
 }
+
 
 // 에러 화면 위젯
 class ErrorScreen extends StatelessWidget {
