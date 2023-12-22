@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:voca_app/providers/page_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:voca_app/providers/voca_provider.dart';
@@ -10,6 +11,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 void main() async {
+  await dotenv.load(fileName: '.env');
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await Firebase.initializeApp(
@@ -75,7 +77,6 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-
 // 로딩 화면 위젯
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({super.key});
@@ -101,7 +102,6 @@ class LoadingScreen extends StatelessWidget {
     );
   }
 }
-
 
 // 에러 화면 위젯
 class ErrorScreen extends StatelessWidget {

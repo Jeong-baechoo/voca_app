@@ -4,16 +4,6 @@ import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
-/// Default [FirebaseOptions] for use with your Firebase apps.
-///
-/// Example:
-/// ```dart
-/// import 'firebase_options.dart';
-/// // ...
-/// await Firebase.initializeApp(
-///   options: DefaultFirebaseOptions.currentPlatform,
-/// );
-/// ```
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -49,7 +39,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '745833094851',
     projectId: 'voca-2ad05',
     authDomain: 'voca-2ad05.firebaseapp.com',
-    databaseURL: 'https://voca-2ad05-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://voca-2ad05-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'voca-2ad05.appspot.com',
     measurementId: 'G-ZGGCH68EJ9',
   );
@@ -59,7 +50,8 @@ class DefaultFirebaseOptions {
     appId: '1:745833094851:android:23c745edadfe89352f0c76',
     messagingSenderId: '745833094851',
     projectId: 'voca-2ad05',
-    databaseURL: 'https://voca-2ad05-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://voca-2ad05-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'voca-2ad05.appspot.com',
   );
 
@@ -68,7 +60,8 @@ class DefaultFirebaseOptions {
     appId: '1:745833094851:ios:b1f76a9512be3d572f0c76',
     messagingSenderId: '745833094851',
     projectId: 'voca-2ad05',
-    databaseURL: 'https://voca-2ad05-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://voca-2ad05-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'voca-2ad05.appspot.com',
     iosBundleId: 'com.example.vocaApp',
   );
@@ -78,7 +71,8 @@ class DefaultFirebaseOptions {
     appId: '1:745833094851:ios:77ae882c7d3112962f0c76',
     messagingSenderId: '745833094851',
     projectId: 'voca-2ad05',
-    databaseURL: 'https://voca-2ad05-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://voca-2ad05-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'voca-2ad05.appspot.com',
     iosBundleId: 'com.example.vocaApp.RunnerTests',
   );

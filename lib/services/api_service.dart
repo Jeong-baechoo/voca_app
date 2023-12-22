@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:voca_app/models/word_description.dart';
 import 'package:voca_app/providers/word_description_provider.dart';
@@ -10,7 +11,7 @@ class ApiService {
     required WordDescriptionProvider wordDescriptionProvider,
   }) async {
     const String apiUrl = 'https://api.openai.com/v1/chat/completions';
-    const openaiApiKey = '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';
+    var openaiApiKey = dotenv.env['openaiApiKey'];
 
     try {
       final Map<String, dynamic> requestData = {
